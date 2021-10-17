@@ -32,6 +32,13 @@ defmodule JiraTracker.Jira.IssuesTest do
           "customfield_11401" => %{
             "value" => "My Team"
           },
+          "customfield_10008" => 3.0,
+          "assignee" => %{
+            "displayName" => "Jane Doe"
+          },
+          "reporter" => %{
+            "displayName" => "Jane Doe"
+          },
           "description" => "The *description* of the story goes _here_",
           "labels" => ["good-stuff"]
         },
@@ -51,6 +58,9 @@ defmodule JiraTracker.Jira.IssuesTest do
       assert issue.state == "New"
       assert issue.type == "Story"
       assert issue.labels == ["good-stuff"]
+      assert issue.reporter == "Jane Doe"
+      assert issue.assignee == "Jane Doe"
+      assert issue.story_points == 3
     end
   end
 
