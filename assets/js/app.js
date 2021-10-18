@@ -25,6 +25,7 @@ import "phoenix_html"
 import {Socket} from "phoenix"
 import {LiveSocket} from "phoenix_live_view"
 import topbar from "../vendor/topbar"
+import Sortable, { MultiDrag } from 'sortablejs'
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 let liveSocket = new LiveSocket("/live", Socket, {params: {_csrf_token: csrfToken}})
@@ -42,3 +43,34 @@ liveSocket.connect()
 // >> liveSocket.enableLatencySim(1000)  // enabled for duration of browser session
 // >> liveSocket.disableLatencySim()
 window.liveSocket = liveSocket
+
+const left = document.querySelector(".left")
+const right = document.querySelector(".right")
+
+Sortable.mount(new MultiDrag())
+
+new Sortable(left, {
+  multiDrag: true,
+  group: "shared",
+  animation: 150,
+  onSort: function (/**Event*/evt) {
+    console.log({evt})
+    const children = Array.from(left.children)
+    children.forEach(child => {
+      console.log('left', children.indexOf(child), child.id)
+    })
+  },
+});
+
+new Sortable(right, {
+  multiDrag: true,
+  group: "shared",
+  animation: 150,
+  onSort: function (/**Event*/evt) {
+    console.log({evt})
+    const children = Array.from(right.children)
+    children.forEach(child => {
+      console.log('right', children.indexOf(child), child.id)
+    })
+  },
+});
