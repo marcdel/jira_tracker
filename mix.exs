@@ -49,6 +49,17 @@ defmodule JiraTracker.MixProject do
       {:gettext, "~> 0.18"},
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
+      {:opentelemetry_api,
+       github: "open-telemetry/opentelemetry-erlang",
+       sparse: "apps/opentelemetry_api",
+       override: true},
+      {:opentelemetry_exporter,
+       github: "open-telemetry/opentelemetry-erlang",
+       sparse: "apps/opentelemetry_exporter",
+       override: true},
+      {:opentelemetry,
+       github: "open-telemetry/opentelemetry-erlang", sparse: "apps/opentelemetry", override: true},
+      {:open_telemetry_decorator, github: "marcdel/open_telemetry_decorator"},
       {:ex_jira, git: "https://github.com/marcdel/elixir-ex_jira.git", tag: "master"}
     ]
   end

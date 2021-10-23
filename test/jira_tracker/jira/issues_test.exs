@@ -4,6 +4,45 @@ defmodule JiraTracker.Jira.IssuesTest do
   alias JiraTracker.Jira.Issues
   alias JiraTracker.Issue
 
+  @issue_json %{
+    "fields" => %{
+      "summary" => "Story title goes here!",
+      "customfield_10003" => [
+        %{
+          "name" => "Groomed"
+        }
+      ],
+      "status" => %{
+        "name" => "New"
+      },
+      "issuetype" => %{
+        "name" => "Story"
+      },
+      "customfield_11401" => %{
+        "value" => "My Team"
+      },
+      "customfield_10008" => 3.0,
+      "assignee" => %{
+        "displayName" => "Jane Doe"
+      },
+      "reporter" => %{
+        "displayName" => "Jane Doe"
+      },
+      "description" => "The *description* of the story goes _here_",
+      "labels" => ["good-stuff"]
+    },
+    "id" => "1",
+    "key" => "ISSUE-4321"
+  }
+
+  describe "fetch_by_team" do
+    test "fetches by project and filters by team" do
+      get_issues = fn "PROJECT_ID" -> {:ok, [@issue_json]} end
+      {:ok, [issue]} = Issues.fetch_by_team("PROJECT_ID", "My Team", get_issues)
+      assert issue.key == "ISSUE-4321"
+    end
+  end
+
   describe "fetch" do
     test "fetches issues for the given project" do
       get_issues = fn
@@ -15,38 +54,7 @@ defmodule JiraTracker.Jira.IssuesTest do
     end
 
     test "maps results to issue structs" do
-      issue_json = %{
-        "fields" => %{
-          "summary" => "Story title goes here!",
-          "customfield_10003" => [
-            %{
-              "name" => "Groomed"
-            }
-          ],
-          "status" => %{
-            "name" => "New"
-          },
-          "issuetype" => %{
-            "name" => "Story"
-          },
-          "customfield_11401" => %{
-            "value" => "My Team"
-          },
-          "customfield_10008" => 3.0,
-          "assignee" => %{
-            "displayName" => "Jane Doe"
-          },
-          "reporter" => %{
-            "displayName" => "Jane Doe"
-          },
-          "description" => "The *description* of the story goes _here_",
-          "labels" => ["good-stuff"]
-        },
-        "id" => "1",
-        "key" => "ISSUE-4321"
-      }
-
-      get_issues = fn _ -> {:ok, [issue_json]} end
+      get_issues = fn _ -> {:ok, [@issue_json]} end
 
       {:ok, [issue]} = Issues.fetch(1234, get_issues)
 

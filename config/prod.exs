@@ -49,3 +49,20 @@ config :logger, level: :info
 #       force_ssl: [hsts: true]
 #
 # Check `Plug.SSL` for all available options in `force_ssl`.
+
+# Configure OpenTelemetry Exporter
+api_key = Map.fetch!(System.get_env(), "HONEYCOMB_KEY")
+
+config :opentelemetry, :processors,
+  otel_batch_processor: %{
+    exporter:
+      {:opentelemetry_exporter,
+       %{
+         protocol: :grpc,
+         headers: [
+           {'x-honeycomb-team', api_key},
+           {'x-honeycomb-dataset', 'jira_tracker'}
+         ],
+         endpoints: [{:https, 'api.honeycomb.io', 443, []}]
+       }}
+  }

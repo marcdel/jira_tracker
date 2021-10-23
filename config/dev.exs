@@ -72,3 +72,20 @@ config :phoenix, :stacktrace_depth, 20
 
 # Initialize plugs at runtime for faster development compilation
 config :phoenix, :plug_init_mode, :runtime
+
+# Configure OpenTelemetry Exporter
+api_key = Map.fetch!(System.get_env(), "HONEYCOMB_KEY")
+
+config :opentelemetry, :processors,
+  otel_batch_processor: %{
+    exporter:
+      {:opentelemetry_exporter,
+       %{
+         protocol: :grpc,
+         headers: [
+           {'x-honeycomb-team', api_key},
+           {'x-honeycomb-dataset', 'jira_tracker_dev'}
+         ],
+         endpoints: [{:https, 'api.honeycomb.io', 443, []}]
+       }}
+  }
