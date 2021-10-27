@@ -18,6 +18,7 @@ defmodule JiraTrackerWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    live "/teams/:id", TeamLive.Show, :show
   end
 
   # Other scopes may use custom stacks.

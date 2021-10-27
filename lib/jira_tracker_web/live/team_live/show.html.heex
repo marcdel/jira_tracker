@@ -1,0 +1,8 @@
+<h1><%= @team.name %></h1>
+
+<h2>Backlog</h2>
+<ul>
+  <%= for story <- @stories do %>
+  <li><%= story.title %> - <%= story.assignee %> (<%= story.type %>)</li>
+  <% end %>
+</ul>

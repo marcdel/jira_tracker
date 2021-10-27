@@ -17,6 +17,11 @@ config :jira_tracker, JiraTrackerWeb.Endpoint,
   pubsub_server: JiraTracker.PubSub,
   live_view: [signing_salt: "y6t09eha"]
 
+config :jira_tracker,
+  jira_account: System.get_env("JIRA_ACCOUNT"),
+  jira_username: System.get_env("JIRA_USERNAME"),
+  jira_password: System.get_env("JIRA_PASSWORD")
+
 config :ex_jira,
   account: System.get_env("JIRA_ACCOUNT"),
   username: System.get_env("JIRA_USERNAME"),
