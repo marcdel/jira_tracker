@@ -1,4 +1,4 @@
-#Jira Tracker
+# Jira Tracker [![CircleCI](https://circleci.com/gh/marcdel/jira_tracker/tree/main.svg?style=svg)](https://circleci.com/gh/marcdel/jira_tracker/tree/main)
 
 Better than Jira, not as good as Pivotal Tracker?
 
