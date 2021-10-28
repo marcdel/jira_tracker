@@ -1,4 +1,4 @@
-defmodule JiraTracker.O11y do
+defmodule O11y do
   require OpenTelemetry.Span, as: Span
   require OpenTelemetry.Tracer, as: Tracer
 

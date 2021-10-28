@@ -3,7 +3,6 @@ defmodule JiraTracker.Jira do
 
   alias JiraTracker.Issue
   alias JiraTracker.Jira.Client, as: JiraClient
-  alias JiraTracker.O11y
 
   @fetch_backlog &JiraClient.backlog/1
 

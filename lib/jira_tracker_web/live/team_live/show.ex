@@ -17,8 +17,12 @@ defmodule JiraTrackerWeb.TeamLive.Show do
 
     stories =
       case Jira.backlog(team.backlog_board_id) do
-        {:ok, stories} -> stories
-        {:error, error} -> []
+        {:ok, stories} ->
+          stories
+
+        {:error, _error} ->
+          O11y.span_attributes(error: true)
+          []
       end
 
     # stories = []
