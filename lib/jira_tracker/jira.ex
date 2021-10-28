@@ -2,7 +2,7 @@ defmodule JiraTracker.Jira do
   use OpenTelemetryDecorator
 
   alias JiraTracker.Story
-  alias JiraTracker.Jira.Client, as: JiraClient
+  alias Jira.Client, as: JiraClient
 
   @fetch_backlog &JiraClient.backlog/1
 

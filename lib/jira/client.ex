@@ -1,7 +1,7 @@
-defmodule JiraTracker.Jira.Client do
-  alias JiraTracker.Jira.AgileAPI
-  alias JiraTracker.Jira.API
-  alias JiraTracker.Jira.Credentials
+defmodule Jira.Client do
+  alias Jira.AgileAPI
+  alias Jira.API
+  alias Jira.Credentials
 
   def backlog(board_id) do
     case AgileAPI.get("/board/#{board_id}/backlog", auth_header()) do

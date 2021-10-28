@@ -1,10 +1,10 @@
-defmodule JiraTracker.Jira.API do
+defmodule Jira.AgileAPI do
   use HTTPoison.Base
 
-  alias JiraTracker.Jira.Credentials
+  alias Jira.Credentials
 
   def process_request_url(url) do
-    "https://#{Credentials.jira_account()}/rest/api/latest#{url}"
+    "https://#{Credentials.jira_account()}/rest/agile/latest#{url}"
   end
 
   def process_request_headers(headers) when is_map(headers) do
