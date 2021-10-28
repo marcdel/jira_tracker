@@ -4,7 +4,7 @@ defmodule JiraTracker.OrganizationFixtures do
   entities via the `JiraTracker.Organization` context.
   """
 
-  import Ecto
+  # import Ecto
 
   @doc """
   Generate a team.

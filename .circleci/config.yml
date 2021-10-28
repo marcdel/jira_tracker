@@ -1,36 +1,56 @@
-# Elixir CircleCI 2.0 configuration file
-# See: https://circleci.com/docs/2.0/language-elixir/
-version: 2
-
-# Define a job to be invoked later in a workflow.
-# See: https://circleci.com/docs/2.0/configuration-reference/#jobs
-jobs:
-  build:
-    # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
-    # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
-    docker:
-      # specify the version here
-      - image: circleci/elixir:1.12
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      - image: circleci/postgres:9.4
-        environment:
+version: 2  # use CircleCI 2.0 instead of CircleCI Classic
+jobs:  # basic units of work in a run
+  build:  # runs not using Workflows must have a `build` job as entry point
+    parallelism: 1  # run only one instance of this job
+    docker:  # run the steps with Docker
+      - image: circleci/elixir:1.12  # ...with this image as the primary container; this is where all `steps` will run
+        auth:
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+        environment:  # environment variables for primary container
+          MIX_ENV: test
+      - image: circleci/postgres:10.1-alpine  # database image
+        environment:  # environment variables for database
           POSTGRES_USER: postgres
+          POSTGRES_DB: jira_tracker_test
           POSTGRES_PASSWORD: postgres
 
-    working_directory: ~/repo
-    # Add steps to the job
-    # See: https://circleci.com/docs/2.0/configuration-reference/#steps
-    steps:
-      - checkout
+    working_directory: ~/app  # directory where steps will run
 
-      # specify any bash command here prefixed with `run: `
-      - run: mix local.hex --force
-      - run: mix local.rebar --force
-      - run: mix deps.get
-      - run: mix deps.unlock --unused && mix deps.clean --unused && git diff --exit-code mix.lock
+    steps:  # commands that comprise the `build` job
+      - checkout  # check out source code to working directory
+
+      - run: mix local.hex --force  # install Hex locally (without prompt)
+      - run: mix local.rebar --force  # fetch a copy of rebar (without prompt)
+
+      - restore_cache:  # restores saved mix cache
+          # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
+          keys:  # list of cache keys, in decreasing specificity
+            - v1-mix-cache-{{ .Branch }}-{{ checksum "mix.lock" }}
+            - v1-mix-cache-{{ .Branch }}
+            - v1-mix-cache
+      - restore_cache:  # restores saved build cache
+          keys:
+            - v1-build-cache-{{ .Branch }}
+            - v1-build-cache
+      - run: mix do deps.get, compile --warnings-as-errors  # get updated dependencies & compile them
+      - save_cache:  # generate and store mix cache
+          key: v1-mix-cache-{{ .Branch }}-{{ checksum "mix.lock" }}
+          paths: "deps"
+      - save_cache: # don't forget to save a *build* cache, too
+          key: v1-build-cache-{{ .Branch }}
+          paths: "_build"
+
       - run: mix format --check-formatted
-      - run: mix compile --warnings-as-errors
-      - run: mix test
+      # check for unused dependencies
+      - run: mix deps.unlock --unused && mix deps.clean --unused && git diff --exit-code mix.lock
+
+      - run:  # special utility that stalls main process until DB is ready
+          name: Wait for DB
+          command: dockerize -wait tcp://localhost:5432 -timeout 1m
+
+      - run: mix test  # run all tests in project
+
+      - store_test_results:  # upload junit test results for display in Test Summary
+          # Read more: https://circleci.com/docs/2.0/collect-test-data/
+          path: _build/test/lib/jira_tracker # Replace with the name of your :app
