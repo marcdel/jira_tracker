@@ -1,7 +1,7 @@
 defmodule JiraTracker.Jira do
   use OpenTelemetryDecorator
 
-  alias JiraTracker.Issue
+  alias JiraTracker.Story
   alias JiraTracker.Jira.Client, as: JiraClient
 
   @fetch_backlog &JiraClient.backlog/1
@@ -26,7 +26,7 @@ defmodule JiraTracker.Jira do
   defp to_struct(issue_json) do
     fields = Map.get(issue_json, "fields")
 
-    %Issue{
+    %Story{
       id: Map.get(issue_json, "id"),
       key: Map.get(issue_json, "key"),
       title: Map.get(fields, "summary"),

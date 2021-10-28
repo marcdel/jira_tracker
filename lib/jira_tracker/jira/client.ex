@@ -10,8 +10,8 @@ defmodule JiraTracker.Jira.Client do
     end
   end
 
-  def get_issues(project_id) do
-    case API.get("/search?jql=project=#{project_id}", auth_header()) do
+  def get_issues(team_name) do
+    case API.get("/search?jql=\"Dev%20Team\"=\"#{URI.encode(team_name)}\"", auth_header()) do
       {:ok, response} -> {:ok, Map.get(response, :body)}
       error -> error
     end

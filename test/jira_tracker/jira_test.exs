@@ -2,7 +2,7 @@ defmodule JiraTracker.JiraTest do
   use ExUnit.Case
   import JiraTracker.JiraIssuesFixtures
 
-  alias JiraTracker.Issue
+  alias JiraTracker.Story
   alias JiraTracker.Jira
 
   describe "backlog" do
@@ -19,7 +19,7 @@ defmodule JiraTracker.JiraTest do
 
       {:ok, issues} = Jira.backlog(123, fetch_fn)
 
-      assert [%Issue{id: "1", key: "ISSUE-4321"}] = issues
+      assert [%Story{id: "1", key: "ISSUE-4321"}] = issues
     end
   end
 end

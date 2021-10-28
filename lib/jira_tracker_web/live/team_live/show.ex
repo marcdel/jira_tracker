@@ -25,7 +25,7 @@ defmodule JiraTrackerWeb.TeamLive.Show do
           []
       end
 
-    # stories = []
+    #     stories = []
 
     {:noreply,
      socket
