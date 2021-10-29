@@ -1,12 +1,12 @@
-defmodule JiraTracker.Organization do
+defmodule JiraTracker.Persistence do
   @moduledoc """
-  The Organization context.
+  The Persistence context.
   """
 
   import Ecto.Query, warn: false
   alias JiraTracker.Repo
 
-  alias JiraTracker.Organization.Team
+  alias JiraTracker.Persistence.TeamRecord
 
   @doc """
   Gets a single team.
@@ -22,7 +22,7 @@ defmodule JiraTracker.Organization do
       ** (Ecto.NoResultsError)
 
   """
-  def get_team!(id), do: Repo.get!(Team, id)
+  def get_team!(id), do: Repo.get!(TeamRecord, id)
 
   @doc """
   Creates a team.
@@ -37,8 +37,8 @@ defmodule JiraTracker.Organization do
 
   """
   def create_team(attrs \\ %{}) do
-    %Team{}
-    |> Team.changeset(attrs)
+    %TeamRecord{}
+    |> TeamRecord.changeset(attrs)
     |> Repo.insert()
   end
 
@@ -48,31 +48,31 @@ defmodule JiraTracker.Organization do
   ## Examples
 
       iex> update_team(team, %{field: new_value})
-      {:ok, %Team{}}
+      {:ok, %TeamRecord{}}
 
       iex> update_team(team, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_team(%Team{} = team, attrs) do
+  def update_team(%TeamRecord{} = team, attrs) do
     team
-    |> Team.changeset(attrs)
+    |> TeamRecord.changeset(attrs)
     |> Repo.update()
   end
 
   @doc """
-  Deletes a Team.
+  Deletes a TeamRecord.
 
   ## Examples
 
-      iex> delete_team(Team)
-      {:ok, %Team{}}
+      iex> delete_team(TeamRecord)
+      {:ok, %TeamRecord{}}
 
       iex> delete_team(team)
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_team(%Team{} = team) do
+  def delete_team(%TeamRecord{} = team) do
     Repo.delete(team)
   end
 
@@ -82,10 +82,10 @@ defmodule JiraTracker.Organization do
   ## Examples
 
       iex> change_team(team)
-      %Ecto.Changeset{data: %Team{}}
+      %Ecto.Changeset{data: %TeamRecord{}}
 
   """
-  def change_team(%Team{} = team, attrs \\ %{}) do
-    Team.changeset(team, attrs)
+  def change_team(%TeamRecord{} = team, attrs \\ %{}) do
+    TeamRecord.changeset(team, attrs)
   end
 end

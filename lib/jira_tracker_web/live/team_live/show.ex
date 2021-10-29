@@ -2,7 +2,7 @@ defmodule JiraTrackerWeb.TeamLive.Show do
   use JiraTrackerWeb, :live_view
   use OpenTelemetryDecorator
 
-  alias JiraTracker.Organization
+  alias JiraTracker.Persistence
   alias JiraTracker.Jira
 
   @impl true
@@ -13,7 +13,7 @@ defmodule JiraTrackerWeb.TeamLive.Show do
   @impl true
   @decorate trace("JiraTrackerWeb.TeamLive.Show.handle_params")
   def handle_params(%{"id" => id}, _, socket) do
-    team = Organization.get_team!(id)
+    team = Persistence.get_team!(id)
 
     stories =
       case Jira.backlog(team.backlog_board_id) do

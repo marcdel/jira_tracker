@@ -1,7 +1,7 @@
-defmodule JiraTracker.OrganizationFixtures do
+defmodule JiraTracker.PersistenceFixtures do
   @moduledoc """
   This module defines test helpers for creating
-  entities via the `JiraTracker.Organization` context.
+  entities via the `JiraTracker.Persistence` context.
   """
 
   # import Ecto
@@ -16,7 +16,7 @@ defmodule JiraTracker.OrganizationFixtures do
         name: "some name",
         backlog_board_id: Ecto.UUID.generate()
       })
-      |> JiraTracker.Organization.create_team()
+      |> JiraTracker.Persistence.create_team()
 
     team
   end

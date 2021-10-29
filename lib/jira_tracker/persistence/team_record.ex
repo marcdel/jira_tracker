@@ -1,4 +1,4 @@
-defmodule JiraTracker.Organization.Team do
+defmodule JiraTracker.Persistence.TeamRecord do
   use Ecto.Schema
   import Ecto.Changeset
 

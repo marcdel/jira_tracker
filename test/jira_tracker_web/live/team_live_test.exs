@@ -2,7 +2,7 @@ defmodule JiraTrackerWeb.TeamLiveTest do
   use JiraTrackerWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import JiraTracker.OrganizationFixtures
+  import JiraTracker.PersistenceFixtures
 
   defp create_team(_) do
     team = team_fixture()
