@@ -19,7 +19,7 @@ defmodule JiraTracker.JiraTest do
 
       {:ok, issues} = Jira.backlog(123, fetch_fn)
 
-      assert [%Story{id: "1", key: "ISSUE-4321"}] = issues
+      assert [%Story{id: "1", jira_key: "ISSUE-4321"}] = issues
     end
   end
 end

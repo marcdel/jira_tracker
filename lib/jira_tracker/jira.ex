@@ -28,7 +28,7 @@ defmodule JiraTracker.Jira do
 
     %Story{
       id: Map.get(issue_json, "id"),
-      key: Map.get(issue_json, "key"),
+      jira_key: Map.get(issue_json, "key"),
       title: Map.get(fields, "summary"),
       description: Map.get(fields, "description"),
       team: get_in(fields, [@team_field, "value"]),

@@ -1,7 +1,7 @@
 defmodule JiraTracker.Story do
   defstruct [
     :id,
-    :key,
+    :jira_key,
     :title,
     :description,
     :team,
