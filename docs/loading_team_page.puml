@@ -1,0 +1,10 @@
+@startuml
+title Loading Team page (no refresh)
+
+TeamLive->Team:backlog(team_id, refresh: false)
+Team->Backlog:get(team)
+Backlog->Persistence:get_backlog(team_id)
+Backlog<--Persistence:[%Story{}, %Story{}]
+Team<--Backlog:[%Story{}, %Story{}]
+TeamLive<--Team:[%Story{}, %Story{}]
+@enduml

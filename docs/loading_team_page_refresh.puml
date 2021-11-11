@@ -1,0 +1,16 @@
+@startuml
+title Loading Team page (refresh)
+
+TeamLive->Team:backlog(team_id, refresh: true)
+Team->Persistence:get_team(team_id)
+Team<--Persistence:%{jira_board_id: 1234}
+Team->Backlog:refresh(team)
+Backlog->Jira:backlog(board_id)
+Backlog<--Jira:[%{"key => "ISSUE-4321"}]
+Backlog->Persistence:get(team_id)
+Backlog<--Persistence:[%Story{}, %Story{}]
+Backlog->Backlog:find_new_stories(team)
+Backlog->Persistence:save_stories([%Story{}, %Story{}])
+Team<--Backlog:[%Story{}, %Story{}]
+TeamLive<--Team:[%Story{}, %Story{}]
+@enduml
