@@ -4,8 +4,6 @@ defmodule JiraTracker.PersistenceFixtures do
   entities via the `JiraTracker.Persistence` context.
   """
 
-  # import Ecto
-
   @doc """
   Generate a team.
   """
@@ -19,5 +17,23 @@ defmodule JiraTracker.PersistenceFixtures do
       |> JiraTracker.Persistence.create_team()
 
     team
+  end
+
+  @doc """
+  Generate a user.
+  """
+  def user_fixture(attrs \\ %{}) do
+    team = team_fixture()
+
+    {:ok, user} =
+      attrs
+      |> Enum.into(%{
+        team_id: team.id,
+        email: "some email",
+        name: "some name"
+      })
+      |> JiraTracker.Persistence.create_user()
+
+    user
   end
 end

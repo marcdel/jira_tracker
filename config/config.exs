@@ -22,11 +22,6 @@ config :jira_tracker,
   jira_username: System.get_env("JIRA_USERNAME"),
   jira_password: System.get_env("JIRA_PASSWORD")
 
-config :ex_jira,
-  account: System.get_env("JIRA_ACCOUNT"),
-  username: System.get_env("JIRA_USERNAME"),
-  password: System.get_env("JIRA_PASSWORD")
-
 # Configures the mailer
 #
 # By default it uses the "Local" adapter which stores the emails
