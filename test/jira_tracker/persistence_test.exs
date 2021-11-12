@@ -102,9 +102,17 @@ defmodule JiraTracker.PersistenceTest do
       type: nil
     }
 
-    test "list_stories/0 returns all stories" do
-      story = story_fixture()
-      assert Persistence.list_stories() == [story]
+    test "list_stories/1 returns all stories" do
+      team = team_fixture()
+      other_team = team_fixture()
+
+      backlog_story = story_fixture(%{team_id: team.id, in_backlog: true})
+      icebox_story = story_fixture(%{team_id: team.id, in_backlog: false})
+      other_team_story = story_fixture(%{team_id: other_team.id, in_backlog: true})
+
+      assert Persistence.list_stories(team.id, in_backlog: true) == [backlog_story]
+      assert Persistence.list_stories(team.id, in_backlog: false) == [icebox_story]
+      assert Persistence.list_stories(other_team.id, in_backlog: true) == [other_team_story]
     end
 
     test "get_story/1 returns the story with given id" do

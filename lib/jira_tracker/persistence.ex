@@ -152,8 +152,10 @@ defmodule JiraTracker.Persistence do
       [%Story{}, ...]
 
   """
-  def list_stories do
-    Repo.all(Story)
+  def list_stories(team_id, in_backlog: in_backlog) do
+    Repo.all(
+      from story in Story, where: story.team_id == ^team_id and story.in_backlog == ^in_backlog
+    )
   end
 
   @doc """
