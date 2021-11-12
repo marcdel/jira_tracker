@@ -153,9 +153,10 @@ defmodule JiraTracker.Persistence do
 
   """
   def list_stories(team_id, in_backlog: in_backlog) do
-    Repo.all(
+    query =
       from story in Story, where: story.team_id == ^team_id and story.in_backlog == ^in_backlog
-    )
+
+    Repo.all(query)
   end
 
   @doc """
