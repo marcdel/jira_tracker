@@ -86,4 +86,112 @@ defmodule JiraTracker.PersistenceTest do
       assert {:error, %Ecto.Changeset{}} = Persistence.create_user(@invalid_attrs)
     end
   end
+
+  describe "stories" do
+    alias JiraTracker.Persistence.Story
+
+    import JiraTracker.PersistenceFixtures
+
+    @invalid_attrs %{
+      description: nil,
+      jira_key: nil,
+      labels: nil,
+      state: nil,
+      story_points: nil,
+      title: nil,
+      type: nil
+    }
+
+    test "list_stories/0 returns all stories" do
+      story = story_fixture()
+      assert Persistence.list_stories() == [story]
+    end
+
+    test "get_story/1 returns the story with given id" do
+      story = story_fixture()
+      assert Persistence.get_story(story.id) == story
+    end
+
+    test "get_story_by_key/1 returns the story with given id" do
+      story = story_fixture()
+      assert Persistence.get_story_by_key(story.jira_key) == story
+    end
+
+    test "create_story/1 with valid data creates a story" do
+      team = team_fixture()
+      reporter = user_fixture()
+      assignee = user_fixture()
+
+      valid_attrs = %{
+        team_id: team.id,
+        reporter_id: reporter.id,
+        assignee_id: assignee.id,
+        description: "some description",
+        jira_key: "some jira_key",
+        labels: ["beep", "boop"],
+        state: "some state",
+        story_points: 42,
+        title: "some title",
+        type: "some type"
+      }
+
+      assert {:ok, %Story{} = story} = Persistence.create_story(valid_attrs)
+
+      assert story.team_id == team.id
+      assert story.reporter_id == reporter.id
+      assert story.assignee_id == assignee.id
+      assert story.in_backlog == false
+      assert story.description == "some description"
+      assert story.jira_key == "some jira_key"
+      assert story.labels == ["beep", "boop"]
+      assert story.state == "some state"
+      assert story.story_points == 42
+      assert story.title == "some title"
+      assert story.type == "some type"
+    end
+
+    test "create_story/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Persistence.create_story(@invalid_attrs)
+    end
+
+    test "update_story/2 with valid data updates the story" do
+      story = story_fixture()
+
+      update_attrs = %{
+        description: "some updated description",
+        jira_key: "some updated jira_key",
+        labels: [],
+        state: "some updated state",
+        story_points: 43,
+        title: "some updated title",
+        type: "some updated type"
+      }
+
+      assert {:ok, %Story{} = story} = Persistence.update_story(story, update_attrs)
+      assert story.description == "some updated description"
+      assert story.jira_key == "some updated jira_key"
+      assert story.labels == []
+      assert story.state == "some updated state"
+      assert story.story_points == 43
+      assert story.title == "some updated title"
+      assert story.type == "some updated type"
+    end
+
+    test "update_story/2 with invalid data returns error changeset" do
+      story = story_fixture()
+      assert {:error, %Ecto.Changeset{}} = Persistence.update_story(story, @invalid_attrs)
+      assert story == Persistence.get_story(story.id)
+    end
+
+    test "delete_story/1 deletes the story" do
+      story = story_fixture()
+      assert {:ok, %Story{}} = Persistence.delete_story(story)
+      assert nil == Persistence.get_story(story.id)
+    end
+
+    test "change_story/1 returns a story changeset" do
+      story = story_fixture()
+      assert %Ecto.Changeset{} = Persistence.change_story(story)
+    end
+  end
 end
