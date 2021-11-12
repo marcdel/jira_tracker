@@ -6,7 +6,7 @@ defmodule JiraTracker.Persistence.Team do
 
   schema "teams" do
     field :name, :string
-    field :backlog_board_id, :string
+    field :backlog_board_id, :integer
     has_many :users, User
 
     timestamps()

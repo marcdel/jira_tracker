@@ -8,7 +8,7 @@ defmodule JiraTracker.PersistenceTest do
 
     import JiraTracker.PersistenceFixtures
 
-    @invalid_attrs %{name: nil}
+    @invalid_attrs %{name: nil, backlog_board_id: nil}
 
     test "get_team!/1 returns the team with given id" do
       team = team_fixture()
@@ -16,11 +16,11 @@ defmodule JiraTracker.PersistenceTest do
     end
 
     test "create_team/1 with valid data creates a team" do
-      valid_attrs = %{name: "some name", backlog_board_id: "12345"}
+      valid_attrs = %{name: "some name", backlog_board_id: 12345}
 
       assert {:ok, %Team{} = team} = Persistence.create_team(valid_attrs)
       assert team.name == "some name"
-      assert team.backlog_board_id == "12345"
+      assert team.backlog_board_id == 12345
     end
 
     test "create_team/1 with invalid data returns error changeset" do
@@ -29,10 +29,11 @@ defmodule JiraTracker.PersistenceTest do
 
     test "update_team/2 with valid data updates the team" do
       team = team_fixture()
-      update_attrs = %{name: "some updated name"}
+      update_attrs = %{name: "some updated name", backlog_board_id: 54321}
 
       assert {:ok, %Team{} = team} = Persistence.update_team(team, update_attrs)
       assert team.name == "some updated name"
+      assert team.backlog_board_id == 54321
     end
 
     test "update_team/2 with invalid data returns error changeset" do

@@ -12,7 +12,7 @@ defmodule JiraTracker.PersistenceFixtures do
       attrs
       |> Enum.into(%{
         name: "some name",
-        backlog_board_id: Ecto.UUID.generate()
+        backlog_board_id: Enum.random(0..1000)
       })
       |> JiraTracker.Persistence.create_team()
 

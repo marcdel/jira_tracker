@@ -4,7 +4,7 @@ defmodule JiraTracker.Repo.Migrations.CreateTeams do
   def change do
     create table(:teams) do
       add :name, :string
-      add :backlog_board_id, :string
+      add :backlog_board_id, :integer
 
       timestamps()
     end
