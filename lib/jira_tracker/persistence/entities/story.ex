@@ -37,7 +37,7 @@ defmodule JiraTracker.Persistence.Story do
       :story_points,
       :in_backlog
     ])
-    |> validate_required([:team_id, :reporter_id, :assignee_id, :jira_key, :title, :state, :type])
+    |> validate_required([:team_id, :jira_key, :title, :state, :type])
     |> unique_constraint(:jira_key)
   end
 end
