@@ -33,16 +33,10 @@ defmodule JiraTracker.Persistence.Icebox do
   """
   @decorate trace("JiraTracker.Persistence.Icebox.add_new_stories", include: [:team_id])
   def add_new_stories(%{id: team_id}, story_attrs) do
-    stories =
-      Enum.map(story_attrs, fn attrs ->
-        Story.changeset(%Story{}, Map.put(attrs, :team_id, team_id))
-      end)
-
-    results = Enum.map(stories, &Repo.insert(&1, on_conflict: :nothing))
-
-    report_results(results)
-
-    results
+    story_attrs
+    |> Enum.map(fn attrs -> Story.changeset(%Story{}, Map.put(attrs, :team_id, team_id)) end)
+    |> Enum.map(&Repo.insert(&1, on_conflict: :nothing))
+    |> report_results()
   end
 
   defp report_results(results) do
