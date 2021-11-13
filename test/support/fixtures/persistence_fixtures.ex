@@ -11,9 +11,9 @@ defmodule JiraTracker.PersistenceFixtures do
     {:ok, team} =
       attrs
       |> Enum.into(%{
-        name: "some name",
-        jira_account: "acme.atlassian.net",
-        backlog_board_id: Enum.random(0..1000)
+        name: Faker.Team.En.name(),
+        jira_account: Faker.Internet.domain_name(),
+        backlog_board_id: System.unique_integer([:positive])
       })
       |> JiraTracker.Persistence.create_team()
 
@@ -30,8 +30,8 @@ defmodule JiraTracker.PersistenceFixtures do
       attrs
       |> Enum.into(%{
         team_id: team.id,
-        email: "some email",
-        name: "some name"
+        email: Faker.Internet.email(),
+        name: Faker.Person.name()
       })
       |> JiraTracker.Persistence.create_user()
 

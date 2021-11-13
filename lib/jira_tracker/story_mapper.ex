@@ -1,5 +1,4 @@
 defmodule JiraTracker.StoryMapper do
-  alias JiraTracker.Persistence.Story
   alias JiraTracker.Persistence
 
   @team_field "customfield_11401"
@@ -9,7 +8,7 @@ defmodule JiraTracker.StoryMapper do
     fields = Map.get(issue_json, "fields")
     team_id = team_id(fields)
 
-    %Story{
+    %{
       id: Map.get(issue_json, "id"),
       jira_key: Map.get(issue_json, "key"),
       title: Map.get(fields, "summary"),
@@ -35,7 +34,7 @@ defmodule JiraTracker.StoryMapper do
     name = get_in(fields, ["reporter", "displayName"])
     email = get_in(fields, ["reporter", "emailAddress"])
 
-    case Persistence.create_user(%{team_id: team_id, name: name, email: email}) do
+    case Persistence.create_or_get_user(%{team_id: team_id, name: name, email: email}) do
       {:ok, user} -> Map.get(user, :id)
       _ -> nil
     end
@@ -45,7 +44,7 @@ defmodule JiraTracker.StoryMapper do
     name = get_in(fields, ["assignee", "displayName"])
     email = get_in(fields, ["assignee", "emailAddress"])
 
-    case Persistence.create_user(%{team_id: team_id, name: name, email: email}) do
+    case Persistence.create_or_get_user(%{team_id: team_id, name: name, email: email}) do
       {:ok, user} -> Map.get(user, :id)
       _ -> nil
     end
@@ -67,6 +66,7 @@ defmodule JiraTracker.StoryMapper do
       "Story" -> "Feature"
       "Task" -> "Chore"
       "Bug" -> "Bug"
+      _ -> "Chore"
     end
   end
 end

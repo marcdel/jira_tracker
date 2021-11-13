@@ -84,11 +84,33 @@ defmodule JiraTracker.PersistenceTest do
       assert Persistence.get_user_by_name("beep boopington") == nil
     end
 
+    test "create_or_get_user/1 creates user when one doesn't exist" do
+      team = team_fixture()
+      valid_attrs = %{team_id: team.id, email: "some email", name: "some name"}
+      assert {:ok, user} = Persistence.create_or_get_user(valid_attrs)
+      assert user.id != nil
+    end
+
+    test "create_or_get_user/1 returns the existing user and discards updates when exists" do
+      team = team_fixture()
+      existing_user = user_fixture(%{team_id: team.id, email: "some email", name: "some name"})
+      valid_attrs = %{team_id: team.id, email: "some email", name: "new name"}
+      assert {:ok, user} = Persistence.create_or_get_user(valid_attrs)
+      assert user.id == existing_user.id
+      assert user.email == "some email"
+      assert user.name == "some name"
+    end
+
+    test "create_or_get_user/1 returns an error tuple when invalid" do
+      assert {:error, _} = Persistence.create_or_get_user(@invalid_attrs)
+    end
+
     test "create_user/1 with valid data creates a user" do
       team = team_fixture()
       valid_attrs = %{team_id: team.id, email: "some email", name: "some name"}
 
       assert {:ok, %User{} = user} = Persistence.create_user(valid_attrs)
+      assert user.id != nil
       assert user.email == "some email"
       assert user.name == "some name"
     end

@@ -9,5 +9,7 @@ defmodule JiraTracker.Repo.Migrations.CreateTeams do
 
       timestamps()
     end
+
+    create unique_index(:teams, [:name, :jira_account])
   end
 end

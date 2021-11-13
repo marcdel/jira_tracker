@@ -3,7 +3,6 @@ defmodule JiraTracker.JiraTest do
   import JiraTracker.JiraIssuesFixtures
   import JiraTracker.PersistenceFixtures
 
-  alias JiraTracker.Persistence.Story
   alias JiraTracker.Jira
 
   describe "backlog" do
@@ -27,7 +26,7 @@ defmodule JiraTracker.JiraTest do
 
       {:ok, issues} = Jira.backlog(123, fetch_fn)
 
-      assert [%Story{id: "1", jira_key: "ISSUE-4321"}] = issues
+      assert [%{id: "1", jira_key: "ISSUE-4321"}] = issues
     end
   end
 end

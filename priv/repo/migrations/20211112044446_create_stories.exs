@@ -5,7 +5,7 @@ defmodule JiraTracker.Repo.Migrations.CreateStories do
     create table(:stories) do
       add :jira_key, :string
       add :title, :string
-      add :description, :string
+      add :description, :text
       add :state, :string
       add :type, :string
       add :labels, {:array, :string}

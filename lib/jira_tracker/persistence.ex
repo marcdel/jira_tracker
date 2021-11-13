@@ -140,6 +140,46 @@ defmodule JiraTracker.Persistence do
   def get_user_by_name(name), do: Repo.get_by(User, name: name)
 
   @doc """
+  Gets a single user by email.
+
+  Returns nil if the User does not exist.
+
+  ## Examples
+
+      iex> get_user_by_email("joe.dirt@email.com")
+      %User{}
+
+      iex> get_user_by_email("bob.smith@email.com")
+      nil
+
+  """
+  def get_user_by_email(email), do: Repo.get_by(User, email: email)
+
+  @doc """
+  Creates a user or get the existing one.
+
+  The create_user/1 function uses the [on_conflict: :nothing] option
+  to avoid creating duplicate users, so if an :id is not created, we
+  look up the user by the unique key to ensure we have the correct data.
+
+  ## Examples
+
+      iex> create_or_get_user(%{field: value})
+      {:ok, %User{}}
+
+      iex> create_or_get_user(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_or_get_user(attrs \\ %{}) do
+    case create_user(attrs) do
+      {:ok, %{id: nil, email: email}} -> {:ok, get_user_by_email(email)}
+      {:ok, user} -> {:ok, user}
+      {:error, error} -> {:error, error}
+    end
+  end
+
+  @doc """
   Creates a user.
 
   ## Examples
