@@ -10,6 +10,6 @@ defmodule JiraTracker.Story do
     :labels,
     :reporter,
     :assignee,
-    :story_points
+    :points
   ]
 end

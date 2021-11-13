@@ -12,6 +12,7 @@ defmodule JiraTracker.PersistenceFixtures do
       attrs
       |> Enum.into(%{
         name: "some name",
+        jira_account: "acme.atlassian.net",
         backlog_board_id: Enum.random(0..1000)
       })
       |> JiraTracker.Persistence.create_team()
@@ -60,7 +61,7 @@ defmodule JiraTracker.PersistenceFixtures do
         jira_key: unique_story_jira_key(),
         labels: ["label 1", "label 2"],
         state: "some state",
-        story_points: 42,
+        points: 42,
         title: "some title",
         type: "some type",
         in_backlog: true

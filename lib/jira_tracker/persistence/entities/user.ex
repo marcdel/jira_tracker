@@ -17,5 +17,6 @@ defmodule JiraTracker.Persistence.User do
     user
     |> cast(attrs, [:name, :email, :team_id])
     |> validate_required([:name, :email, :team_id])
+    |> unique_constraint(:email)
   end
 end

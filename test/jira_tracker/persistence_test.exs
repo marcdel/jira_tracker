@@ -8,18 +8,29 @@ defmodule JiraTracker.PersistenceTest do
 
     import JiraTracker.PersistenceFixtures
 
-    @invalid_attrs %{name: nil, backlog_board_id: nil}
+    @invalid_attrs %{name: nil, jira_account: nil, backlog_board_id: nil}
 
     test "get_team!/1 returns the team with given id" do
       team = team_fixture()
       assert Persistence.get_team!(team.id) == team
     end
 
+    test "get_team_by_name/1 returns the team with given name" do
+      team = team_fixture()
+      assert Persistence.get_team_by_name(team.name) == team
+      assert Persistence.get_team_by_name("mystery team") == nil
+    end
+
     test "create_team/1 with valid data creates a team" do
-      valid_attrs = %{name: "some name", backlog_board_id: 12345}
+      valid_attrs = %{
+        name: "some name",
+        jira_account: "acme.atlassian.net",
+        backlog_board_id: 12345
+      }
 
       assert {:ok, %Team{} = team} = Persistence.create_team(valid_attrs)
       assert team.name == "some name"
+      assert team.jira_account == "acme.atlassian.net"
       assert team.backlog_board_id == 12345
     end
 
@@ -97,7 +108,7 @@ defmodule JiraTracker.PersistenceTest do
       jira_key: nil,
       labels: nil,
       state: nil,
-      story_points: nil,
+      points: nil,
       title: nil,
       type: nil
     }
@@ -138,7 +149,7 @@ defmodule JiraTracker.PersistenceTest do
         jira_key: "some jira_key",
         labels: ["beep", "boop"],
         state: "some state",
-        story_points: 42,
+        points: 42,
         title: "some title",
         type: "some type"
       }
@@ -153,7 +164,7 @@ defmodule JiraTracker.PersistenceTest do
       assert story.jira_key == "some jira_key"
       assert story.labels == ["beep", "boop"]
       assert story.state == "some state"
-      assert story.story_points == 42
+      assert story.points == 42
       assert story.title == "some title"
       assert story.type == "some type"
     end
@@ -170,7 +181,7 @@ defmodule JiraTracker.PersistenceTest do
         jira_key: "some updated jira_key",
         labels: [],
         state: "some updated state",
-        story_points: 43,
+        points: 43,
         title: "some updated title",
         type: "some updated type"
       }
@@ -180,7 +191,7 @@ defmodule JiraTracker.PersistenceTest do
       assert story.jira_key == "some updated jira_key"
       assert story.labels == []
       assert story.state == "some updated state"
-      assert story.story_points == 43
+      assert story.points == 43
       assert story.title == "some updated title"
       assert story.type == "some updated type"
     end

@@ -9,7 +9,7 @@ defmodule JiraTracker.Repo.Migrations.CreateStories do
       add :state, :string
       add :type, :string
       add :labels, {:array, :string}
-      add :story_points, :integer
+      add :points, :integer
       add :in_backlog, :boolean, default: false
       add :team_id, references(:teams, on_delete: :nothing)
       add :reporter_id, references(:users, on_delete: :nothing)

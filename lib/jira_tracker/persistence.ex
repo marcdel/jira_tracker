@@ -25,6 +25,22 @@ defmodule JiraTracker.Persistence do
   def get_team!(id), do: Repo.get!(Team, id)
 
   @doc """
+  Gets a single team by name.
+
+  Returns nil if the Team does not exist.
+
+  ## Examples
+
+      iex> get_team_by_name("Joe Dirt")
+      %Team{}
+
+      iex> get_team_by_name("Bob Smith")
+      nil
+
+  """
+  def get_team_by_name(name), do: Repo.get_by(Team, name: name)
+
+  @doc """
   Creates a team.
 
   ## Examples
@@ -39,7 +55,7 @@ defmodule JiraTracker.Persistence do
   def create_team(attrs \\ %{}) do
     %Team{}
     |> Team.changeset(attrs)
-    |> Repo.insert()
+    |> Repo.insert(on_conflict: :nothing)
   end
 
   @doc """
@@ -138,7 +154,7 @@ defmodule JiraTracker.Persistence do
   def create_user(attrs \\ %{}) do
     %User{}
     |> User.changeset(attrs)
-    |> Repo.insert()
+    |> Repo.insert(on_conflict: :nothing)
   end
 
   alias JiraTracker.Persistence.Story

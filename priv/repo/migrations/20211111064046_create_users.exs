@@ -11,5 +11,6 @@ defmodule JiraTracker.Repo.Migrations.CreateUsers do
     end
 
     create index(:users, [:team_id])
+    create unique_index(:users, [:email])
   end
 end

@@ -20,10 +20,12 @@ defmodule JiraTracker.JiraIssuesFixtures do
           },
           "customfield_10008" => 3.0,
           "assignee" => %{
-            "displayName" => "Jane Doe"
+            "displayName" => "Jane Doe",
+            "emailAddress" => "jane.doe@email.com"
           },
           "reporter" => %{
-            "displayName" => "Jane Doe"
+            "displayName" => "John Doe",
+            "emailAddress" => "john.doe@email.com"
           },
           "description" => "The *description* of the story goes _here_",
           "labels" => ["good-stuff"]

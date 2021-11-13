@@ -10,7 +10,7 @@ defmodule JiraTracker.Persistence.Story do
     field :jira_key, :string
     field :labels, {:array, :string}
     field :state, :string
-    field :story_points, :integer
+    field :points, :integer
     field :title, :string
     field :type, :string
     field :in_backlog, :boolean, default: false
@@ -34,7 +34,7 @@ defmodule JiraTracker.Persistence.Story do
       :state,
       :type,
       :labels,
-      :story_points,
+      :points,
       :in_backlog
     ])
     |> validate_required([:team_id, :jira_key, :title, :state, :type])

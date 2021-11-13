@@ -1,11 +1,19 @@
 defmodule JiraTracker.JiraTest do
-  use ExUnit.Case
+  use JiraTracker.DataCase
   import JiraTracker.JiraIssuesFixtures
+  import JiraTracker.PersistenceFixtures
 
-  alias JiraTracker.Story
+  alias JiraTracker.Persistence.Story
   alias JiraTracker.Jira
 
   describe "backlog" do
+    setup do
+      # This is the default team name in issue_json, I'm just too lazy to pass in an override.
+      team_fixture(%{name: "My Team"})
+
+      :ok
+    end
+
     test "fetches issues from the jira api for the given board" do
       fetch_fn = fn 123 -> {:ok, [issue_json(), issue_json()]} end
 
