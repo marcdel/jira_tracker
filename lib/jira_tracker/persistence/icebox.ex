@@ -33,6 +33,8 @@ defmodule JiraTracker.Persistence.Icebox do
   """
   @decorate trace("JiraTracker.Persistence.Icebox.add_new_stories", include: [:team_id])
   def add_new_stories(%{id: team_id}, story_attrs) do
+    O11y.add_context_attributes(%{team_id: team_id})
+
     story_attrs
     |> Enum.map(fn attrs -> Story.changeset(%Story{}, Map.put(attrs, :team_id, team_id)) end)
     |> Enum.map(&Repo.insert(&1, on_conflict: :nothing))
@@ -43,10 +45,20 @@ defmodule JiraTracker.Persistence.Icebox do
     {successes, errors} =
       Enum.split_with(results, fn
         {:ok, _} -> true
-        _ -> false
+        {:error, _} -> false
       end)
 
-    O11y.span_attributes(error_count: Enum.count(errors), success_count: Enum.count(successes))
+    {not_saved, saved} =
+      Enum.split_with(successes, fn
+        {:ok, %{id: nil}} -> true
+        {:ok, _} -> false
+      end)
+
+    O11y.add_span_attributes(
+      error_count: Enum.count(errors),
+      saved_count: Enum.count(saved),
+      not_saved_count: Enum.count(not_saved)
+    )
 
     results
   end

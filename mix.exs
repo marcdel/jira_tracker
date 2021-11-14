@@ -60,7 +60,8 @@ defmodule JiraTracker.MixProject do
        override: true},
       {:opentelemetry,
        github: "open-telemetry/opentelemetry-erlang", sparse: "apps/opentelemetry", override: true},
-      {:opentelemetry_phoenix, "~> 1.0.0-rc.3"},
+      {:opentelemetry_phoenix, "~> 1.0.0-rc.5"},
+      {:opentelemetry_ecto, "~> 1.0.0-rc.3"},
       {:open_telemetry_decorator, github: "marcdel/open_telemetry_decorator"},
       {:ex_jira, git: "https://github.com/marcdel/elixir-ex_jira.git", tag: "master"},
       {:faker, "~> 0.16", only: :test}

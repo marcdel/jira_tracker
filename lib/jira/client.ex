@@ -1,8 +1,13 @@
 defmodule Jira.Client do
+  use OpenTelemetryDecorator
+
   alias Jira.AgileAPI
   alias Jira.API
   alias Jira.Credentials
 
+  @team_name_field "Dev Team"
+
+  @decorate trace("Jira.Client.backlog", include: [:board_id])
   def backlog(board_id) do
     case AgileAPI.get("/board/#{board_id}/backlog", auth_header()) do
       {:ok, response} -> {:ok, response |> Map.get(:body) |> Map.get("issues")}
@@ -10,9 +15,10 @@ defmodule Jira.Client do
     end
   end
 
+  @decorate trace("Jira.Client.get_issues", include: [:team_name])
   def get_issues(team_name) do
-    case API.get("/search?jql=\"Dev%20Team\"=\"#{URI.encode(team_name)}\"", auth_header()) do
-      {:ok, response} -> {:ok, Map.get(response, :body)}
+    case API.get("/search?jql=\"#{URI.encode(@team_name_field)}\"=\"#{URI.encode(team_name)}\"", auth_header()) do
+      {:ok, response} -> {:ok, response |> Map.get(:body) |> Map.get("issues")}
       error -> error
     end
   end

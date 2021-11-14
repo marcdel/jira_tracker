@@ -21,6 +21,42 @@ defmodule JiraTracker.PersistenceTest do
       assert Persistence.get_team_by_name("mystery team") == nil
     end
 
+    test "create_or_get_team/1 creates team when one doesn't exist" do
+      valid_attrs = %{
+        name: "some name",
+        jira_account: "acme.atlassian.net",
+        backlog_board_id: 12345
+      }
+
+      assert {:ok, team} = Persistence.create_or_get_team(valid_attrs)
+      assert team.id != nil
+    end
+
+    test "create_or_get_team/1 returns the existing team and discards updates when exists" do
+      existing_team =
+        team_fixture(%{
+          name: "some name",
+          jira_account: "acme.atlassian.net",
+          backlog_board_id: 12345
+        })
+
+      valid_attrs = %{
+        name: "some name",
+        jira_account: "acme.atlassian.net",
+        backlog_board_id: 55555
+      }
+
+      assert {:ok, team} = Persistence.create_or_get_team(valid_attrs)
+      assert team.id == existing_team.id
+      assert team.name == "some name"
+      assert team.jira_account == "acme.atlassian.net"
+      assert team.backlog_board_id == 12345
+    end
+
+    test "create_or_get_team/1 returns an error tuple when invalid" do
+      assert {:error, _} = Persistence.create_or_get_team(@invalid_attrs)
+    end
+
     test "create_team/1 with valid data creates a team" do
       valid_attrs = %{
         name: "some name",

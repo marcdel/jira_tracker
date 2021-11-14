@@ -1,16 +1,20 @@
 defmodule JiraTracker.StoryMapper do
+  use OpenTelemetryDecorator
+
   alias JiraTracker.Persistence
 
   @team_field "customfield_11401"
   @story_point_field "customfield_10008"
 
+  @decorate trace("JiraTracker.StoryMapper.issue_to_story", include: [:team_id, :jira_key])
   def issue_to_story(issue_json) do
     fields = Map.get(issue_json, "fields")
     team_id = team_id(fields)
+    jira_key = Map.get(issue_json, "key")
 
     %{
       id: Map.get(issue_json, "id"),
-      jira_key: Map.get(issue_json, "key"),
+      jira_key: jira_key,
       title: Map.get(fields, "summary"),
       description: Map.get(fields, "description"),
       team_id: team_id,

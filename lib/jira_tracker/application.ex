@@ -8,6 +8,7 @@ defmodule JiraTracker.Application do
   @impl true
   def start(_type, _args) do
     OpentelemetryPhoenix.setup()
+    OpentelemetryEcto.setup([:jira_tracker, :repo])
 
     children = [
       # Start the Ecto repository

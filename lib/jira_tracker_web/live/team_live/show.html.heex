@@ -1,8 +1,21 @@
 <h1><%= @team.name %></h1>
 
-<h2>Backlog</h2>
-<ul>
-  <%= for story <- @stories do %>
-  <li><%= story.title %> - <%= story.assignee %> (<%= story.type %>)</li>
-  <% end %>
-</ul>
+<section class="panels">
+  <section class="panel">
+    <h2>Backlog</h2>
+    <ul>
+      <%= for story <- @backlog.stories do %>
+      <li><%= story.jira_key %> - <%= story.title %> (<%= story.type %>)</li>
+      <% end %>
+    </ul>
+  </section>
+
+  <section class="panel">
+    <h2>Icebox</h2>
+    <ul>
+      <%= for story <- @icebox.stories do %>
+      <li><%= story.jira_key %> - <%= story.title %> (<%= story.type %>)</li>
+      <% end %>
+    </ul>
+  </section>
+</section>

@@ -35,6 +35,10 @@
   margin: -1rem 0 2rem;
 }
 
+.panels {
+  display: flex;
+}
+
 /* LiveView specific classes for your customization */
 .phx-no-feedback.invalid-feedback,
 .phx-no-feedback .invalid-feedback {
