@@ -9,7 +9,7 @@ defmodule JiraTracker.Icebox do
   @decorate trace("JiraTracker.Icebox.refresh")
   def refresh(team) do
     {:ok, unsaved_stories} = Jira.other_stories(team.name)
-    {:ok, stories} = DbIcebox.add_new_stories(team, unsaved_stories)
+    DbIcebox.add_new_stories(team, unsaved_stories)
 
     get(team)
   end
