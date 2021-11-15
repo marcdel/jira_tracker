@@ -17,7 +17,9 @@ defmodule Jira.Client do
 
   @decorate trace("Jira.Client.get_issues", include: [:team_name])
   def get_issues(team_name) do
-    case API.get("/search?jql=\"#{URI.encode(@team_name_field)}\"=\"#{URI.encode(team_name)}\"", auth_header()) do
+    url = "/search?jql=\"#{URI.encode(@team_name_field)}\"=\"#{URI.encode(team_name)}\""
+
+    case API.get(url, auth_header()) do
       {:ok, response} -> {:ok, response |> Map.get(:body) |> Map.get("issues")}
       error -> error
     end
