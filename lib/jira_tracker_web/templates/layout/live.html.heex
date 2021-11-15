@@ -155,7 +155,8 @@
             My Work
           </a>
 
-          <a href="#" class="bg-gray-900 text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md">
+          <%= if @backlog.open do %>
+            <a href="#" phx-click="toggle_backlog" class="bg-gray-900 text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md">
             <!--
               Heroicon name: outline/home
 
@@ -166,13 +167,35 @@
             </svg>
             Backlog
           </a>
+          <% else %>
+            <a href="#" phx-click="toggle_backlog" class="text-gray-300 hover:bg-gray-700 hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md">
+            <!--
+              Heroicon name: outline/home
 
-          <a href="#" class="bg-gray-900 text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md">
+              Current: "text-gray-300", Default: "text-gray-400 group-hover:text-gray-300"
+            -->
+            <svg class="text-gray-300 mr-3 flex-shrink-0 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
+            </svg>
+            Backlog
+          </a>
+          <% end %>
+
+          <%= if @icebox.open do %>
+            <a href="#" phx-click="toggle_icebox" class="bg-gray-900 text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md">
             <svg class="text-gray-400 group-hover:text-gray-300 mr-3 flex-shrink-0 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
             </svg>
             Icebox
           </a>
+          <% else %>
+            <a href="#" phx-click="toggle_icebox" class="text-gray-300 hover:bg-gray-700 hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md">
+            <svg class="text-gray-400 group-hover:text-gray-300 mr-3 flex-shrink-0 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+            </svg>
+            Icebox
+          </a>
+          <% end %>
 
           <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md">
             <svg class="text-gray-400 group-hover:text-gray-300 mr-3 flex-shrink-0 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -207,7 +230,6 @@
         <p class="alert alert-info" role="alert"
            phx-click="lv:clear-flash"
            phx-value-key="info"><%= live_flash(@flash, :info) %></p>
-
         <p class="alert alert-danger" role="alert"
            phx-click="lv:clear-flash"
            phx-value-key="error"><%= live_flash(@flash, :error) %></p>

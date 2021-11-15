@@ -4,7 +4,7 @@ defmodule JiraTracker.Icebox do
   alias JiraTracker.Jira
   alias JiraTracker.Persistence.Icebox, as: DbIcebox
 
-  defstruct stories: []
+  defstruct open: false, stories: []
 
   @decorate trace("JiraTracker.Icebox.refresh")
   def refresh(team) do

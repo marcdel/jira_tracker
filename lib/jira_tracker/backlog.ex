@@ -4,7 +4,7 @@ defmodule JiraTracker.Backlog do
   alias JiraTracker.Jira
   alias JiraTracker.Persistence.Backlog, as: DbBacklog
 
-  defstruct stories: []
+  defstruct open: true, stories: []
 
   @decorate trace("JiraTracker.Backlog.refresh")
   def refresh(team) do
