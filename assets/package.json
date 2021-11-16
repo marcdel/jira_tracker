@@ -2,7 +2,8 @@
   "name": "jira_tracker",
   "version": "0.1.0",
   "scripts": {
-    "deploy": "NODE_ENV=production tailwindcss --postcss --minify --input=css/app.css --output=../priv/static/assets/app.css && (cd .. mix assets.deploy && rm -f _build/esbuild)"
+    "tailwind:minify": "NODE_ENV=production tailwindcss --postcss --minify --input=css/app.css --output=../priv/static/assets/app.css",
+    "deploy": "(cd .. mix assets.deploy && rm -f _build/esbuild)"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.0",
