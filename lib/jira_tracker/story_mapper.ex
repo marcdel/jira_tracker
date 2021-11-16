@@ -23,7 +23,7 @@ defmodule JiraTracker.StoryMapper do
       labels: Map.get(fields, "labels"),
       reporter_id: reporter_id(team_id, fields),
       assignee_id: assignee_id(team_id, fields),
-      points: Map.get(fields, @story_point_field)
+      points: Map.get(fields, @story_point_field) || 0
     }
   end
 

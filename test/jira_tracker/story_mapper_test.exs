@@ -54,4 +54,45 @@ defmodule JiraTracker.StoryMapperTest do
     assert story.assignee_id != nil
     assert story.reporter_id != nil
   end
+
+  test "handles nil story points" do
+    issue_json = %{
+      "fields" => %{
+        "summary" => "Story title goes here!",
+        "customfield_10003" => [
+          %{
+            "name" => "Groomed"
+          }
+        ],
+        "status" => %{
+          "name" => "New"
+        },
+        "issuetype" => %{
+          "name" => "Story"
+        },
+        "customfield_11401" => %{
+          "value" => "My Team"
+        },
+        "customfield_10008" => nil,
+        "assignee" => %{
+          "displayName" => "Jane Doe",
+          "emailAddress" => "jane.doe@email.com"
+        },
+        "reporter" => %{
+          "displayName" => "John Doe",
+          "emailAddress" => "john.doe@email.com"
+        },
+        "description" => "The *description* of the story goes _here_",
+        "labels" => ["good-stuff"]
+      },
+      "id" => "1",
+      "key" => "ISSUE-4321"
+    }
+
+    team = team_fixture(%{name: "My Team"})
+
+    story = StoryMapper.issue_to_story(issue_json)
+
+    assert story.points == 0
+  end
 end

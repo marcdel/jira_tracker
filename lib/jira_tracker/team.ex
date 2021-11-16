@@ -5,6 +5,10 @@ defmodule JiraTracker.Team do
 
   def get!(id), do: Persistence.get_team!(id)
 
+  def refresh(team) do
+    %{backlog: Backlog.refresh(team), icebox: Icebox.refresh(team)}
+  end
+
   def backlog(team) do
     case Backlog.get(team) do
       %{stories: []} -> Backlog.refresh(team)

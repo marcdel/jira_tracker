@@ -39,4 +39,17 @@ defmodule JiraTrackerWeb.TeamLive.Show do
     new_icebox = %{icebox | open: !icebox.open}
     {:noreply, assign(socket, :icebox, new_icebox)}
   end
+
+  @impl true
+  @decorate trace("JiraTrackerWeb.TeamLive.Show.refresh")
+  def handle_event("refresh", _value, socket) do
+    %{backlog: backlog, icebox: icebox} = Team.refresh(socket.assigns.team)
+
+    socket =
+      socket
+      |> assign(:backlog, backlog)
+      |> assign(:icebox, icebox)
+
+    {:noreply, socket}
+  end
 end
