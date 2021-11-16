@@ -14,8 +14,20 @@ defmodule JiraTrackerWeb.Router do
     plug :accepts, ["json"]
   end
 
+  import Plug.BasicAuth
+
+  pipeline :protected do
+    if Mix.env() == :test do
+      plug :basic_auth, username: "admin", password: "admin"
+    else
+      plug :basic_auth,
+        username: Map.fetch!(System.get_env(), "AUTH_USERNAME"),
+        password: Map.fetch!(System.get_env(), "AUTH_PASSWORD")
+    end
+  end
+
   scope "/", JiraTrackerWeb do
-    pipe_through :browser
+    pipe_through [:browser, :protected]
 
     get "/", PageController, :index
     live "/teams/:id", TeamLive.Show, :show
