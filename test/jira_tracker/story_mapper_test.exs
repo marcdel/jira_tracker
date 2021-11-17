@@ -3,6 +3,8 @@ defmodule JiraTracker.StoryMapperTest do
   import JiraTracker.PersistenceFixtures
 
   alias JiraTracker.StoryMapper
+  alias JiraTracker.Persistence
+  alias JiraTracker.Persistence.Story
 
   test "issue_to_story/1 maps the issue fields to story fields" do
     issue_json = %{
@@ -41,6 +43,9 @@ defmodule JiraTracker.StoryMapperTest do
     team = team_fixture(%{name: "My Team"})
 
     story = StoryMapper.issue_to_story(issue_json)
+    changeset = Persistence.change_story(%Story{}, story)
+
+    assert changeset.valid?
 
     assert story.id == "1"
     assert story.jira_key == "ISSUE-4321"
@@ -92,7 +97,9 @@ defmodule JiraTracker.StoryMapperTest do
     team_fixture(%{name: "My Team"})
 
     story = StoryMapper.issue_to_story(issue_json)
+    changeset = Persistence.change_story(%Story{}, story)
 
-    assert story.points == 0
+    assert story.points == nil
+    assert changeset.valid?
   end
 end

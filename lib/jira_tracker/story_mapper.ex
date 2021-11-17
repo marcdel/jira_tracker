@@ -23,9 +23,18 @@ defmodule JiraTracker.StoryMapper do
       labels: Map.get(fields, "labels"),
       reporter_id: reporter_id(team_id, fields),
       assignee_id: assignee_id(team_id, fields),
-      points: Map.get(fields, @story_point_field) || 0
+      points: points(fields)
     }
   end
+
+  defp points(fields) do
+    fields
+    |> Map.get(@story_point_field)
+    |> convert_to_integer()
+  end
+
+  defp convert_to_integer(nil), do: nil
+  defp convert_to_integer(float) when is_float(float), do: trunc(float)
 
   defp team_id(fields) do
     case Persistence.get_team_by_name(get_in(fields, [@team_field, "value"])) do
