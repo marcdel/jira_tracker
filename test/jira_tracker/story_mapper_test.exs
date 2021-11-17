@@ -89,7 +89,7 @@ defmodule JiraTracker.StoryMapperTest do
       "key" => "ISSUE-4321"
     }
 
-    team = team_fixture(%{name: "My Team"})
+    team_fixture(%{name: "My Team"})
 
     story = StoryMapper.issue_to_story(issue_json)
 
