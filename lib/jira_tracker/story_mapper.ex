@@ -27,6 +27,10 @@ defmodule JiraTracker.StoryMapper do
     }
   end
 
+  def subtask?(issue_json) do
+    get_in(issue_json, ["fields", "issuetype", "subtask"]) == true
+  end
+
   defp points(fields) do
     fields
     |> Map.get(@story_point_field)
