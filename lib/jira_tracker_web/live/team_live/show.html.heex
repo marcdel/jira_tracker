@@ -54,7 +54,7 @@
                   <td class="px-4 py-4 text-xs text-gray-900">
                     <%= live_component JiraTrackerWeb.StoryTypeComponent, id: story.id, type: story.type %>
                   </td>
-                  <td class="px-4 py-4 text-xs text-gray-500">
+                  <td class="px-1 py-4 text-xs text-gray-500">
                     <%= if(story.type == "Feature") do %>
                       <%= live_component JiraTrackerWeb.StoryPointComponent, id: story.id, points: story.points %>
                     <% end %>
