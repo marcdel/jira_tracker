@@ -52,4 +52,12 @@ defmodule JiraTrackerWeb.TeamLive.Show do
 
     {:noreply, socket}
   end
+
+  @impl true
+  @decorate trace("JiraTrackerWeb.TeamLive.Show.point_story")
+  def handle_event("point_story", value, socket) do
+    IO.inspect(value, label: "point_story value")
+
+    {:noreply, socket}
+  end
 end

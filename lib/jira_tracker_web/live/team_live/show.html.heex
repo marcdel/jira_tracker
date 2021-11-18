@@ -55,7 +55,7 @@
                     <%= live_component JiraTrackerWeb.StoryTypeComponent, id: story.id, type: story.type %>
                   </td>
                   <td class="px-4 py-4 text-xs text-gray-500">
-                    <%= story.points %>
+                    <%= live_component JiraTrackerWeb.StoryPointComponent, id: story.id, points: story.points %>
                   </td>
                   <td class="px-4 py-4 text-xs font-bold text-gray-500">
                     <%= story.title %>
