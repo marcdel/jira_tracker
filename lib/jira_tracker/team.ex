@@ -3,6 +3,18 @@ defmodule JiraTracker.Team do
   alias JiraTracker.Icebox
   alias JiraTracker.Persistence
 
+  defstruct [:name, :backlog, :icebox]
+
+  def load!(team_id) do
+    team = Persistence.get_team!(team_id)
+
+    %__MODULE__{
+      name: team.name,
+      backlog: backlog(team),
+      icebox: icebox(team)
+    }
+  end
+
   def get!(id), do: Persistence.get_team!(id)
 
   def refresh(team) do

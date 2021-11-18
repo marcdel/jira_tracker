@@ -3,12 +3,14 @@ defmodule JiraTracker.Persistence.Team do
   import Ecto.Changeset
 
   alias JiraTracker.Persistence.User
+  alias JiraTracker.Persistence.Story
 
   schema "teams" do
     field :name, :string
     field :jira_account, :string
     field :backlog_board_id, :integer
     has_many :users, User
+    has_many :stories, Story
 
     timestamps()
   end

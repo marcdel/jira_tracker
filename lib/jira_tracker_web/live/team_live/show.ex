@@ -11,17 +11,15 @@ defmodule JiraTrackerWeb.TeamLive.Show do
 
   @impl true
   @decorate trace("JiraTrackerWeb.TeamLive.Show.handle_params")
-  def handle_params(%{"id" => id}, _, socket) do
-    team = Team.get!(id)
-    backlog = Team.backlog(team)
-    icebox = Team.icebox(team)
+  def handle_params(%{"id" => team_id}, _, socket) do
+    team = Team.load!(team_id)
 
     {:noreply,
      socket
      |> assign(:page_title, team.name)
      |> assign(:team, team)
-     |> assign(:backlog, backlog)
-     |> assign(:icebox, icebox)}
+     |> assign(:backlog, team.backlog)
+     |> assign(:icebox, team.icebox)}
   end
 
   @impl true
