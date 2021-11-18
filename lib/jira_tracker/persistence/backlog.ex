@@ -6,7 +6,11 @@ defmodule JiraTracker.Persistence.Backlog do
   alias JiraTracker.Repo
 
   def stories(%{id: team_id}) do
-    query = from story in Story, where: story.team_id == ^team_id and story.in_backlog == true
+    query =
+      from story in Story,
+        where: story.team_id == ^team_id and story.in_backlog == true,
+        order_by: story.jira_key
+
     Repo.all(query)
   end
 

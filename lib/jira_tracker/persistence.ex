@@ -255,6 +255,8 @@ defmodule JiraTracker.Persistence do
   """
   def get_story(id), do: Repo.get(Story, id)
 
+  def get_story!(id), do: Repo.get!(Story, id)
+
   @doc """
   Gets a single story.
 

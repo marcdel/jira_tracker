@@ -15,7 +15,11 @@ defmodule JiraTracker.Persistence.Icebox do
 
   """
   def stories(%{id: team_id}) do
-    query = from story in Story, where: story.team_id == ^team_id and story.in_backlog == false
+    query =
+      from story in Story,
+        where: story.team_id == ^team_id and story.in_backlog == false,
+        order_by: story.jira_key
+
     Repo.all(query)
   end
 
