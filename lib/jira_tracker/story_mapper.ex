@@ -3,13 +3,11 @@ defmodule JiraTracker.StoryMapper do
 
   alias JiraTracker.Persistence
 
-  @team_field "customfield_11401"
   @story_point_field "customfield_10008"
 
   @decorate trace("JiraTracker.StoryMapper.issue_to_story", include: [:team_id, :jira_key])
-  def issue_to_story(issue_json) do
+  def issue_to_story(%{id: team_id}, issue_json) do
     fields = Map.get(issue_json, "fields")
-    team_id = team_id(fields)
     jira_key = Map.get(issue_json, "key")
 
     %{
@@ -39,13 +37,6 @@ defmodule JiraTracker.StoryMapper do
 
   defp convert_to_integer(nil), do: nil
   defp convert_to_integer(float) when is_float(float), do: trunc(float)
-
-  defp team_id(fields) do
-    case Persistence.get_team_by_name(get_in(fields, [@team_field, "value"])) do
-      nil -> nil
-      team -> Map.get(team, :id)
-    end
-  end
 
   defp reporter_id(team_id, fields) do
     name = get_in(fields, ["reporter", "displayName"])

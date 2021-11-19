@@ -8,7 +8,7 @@ defmodule JiraTracker.Backlog do
 
   @decorate trace("JiraTracker.Backlog.refresh")
   def refresh(team) do
-    {:ok, unsaved_stories} = Jira.backlog(team.backlog_board_id)
+    {:ok, unsaved_stories} = Jira.backlog(team)
     DbBacklog.add_new_stories(team, unsaved_stories)
 
     get(team)

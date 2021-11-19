@@ -20,7 +20,7 @@ defmodule Jira.Client do
     url = "/search?jql=\"#{URI.encode(@team_name_field)}\"=\"#{URI.encode(team_name)}\""
 
     case API.get(url, auth_header()) do
-      {:ok, response} -> {:ok, response |> Map.get(:body) |> Map.get("issues")}
+      {:ok, response} -> {:ok, response |> Map.get(:body) |> Map.get("issues", [])}
       error -> error
     end
   end

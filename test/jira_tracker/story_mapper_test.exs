@@ -42,7 +42,7 @@ defmodule JiraTracker.StoryMapperTest do
 
     team = team_fixture(%{name: "My Team"})
 
-    story = StoryMapper.issue_to_story(issue_json)
+    story = StoryMapper.issue_to_story(team, issue_json)
     changeset = Persistence.change_story(%Story{}, story)
 
     assert changeset.valid?
@@ -94,9 +94,9 @@ defmodule JiraTracker.StoryMapperTest do
       "key" => "ISSUE-4321"
     }
 
-    team_fixture(%{name: "My Team"})
+    team = team_fixture(%{name: "My Team"})
 
-    story = StoryMapper.issue_to_story(issue_json)
+    story = StoryMapper.issue_to_story(team, issue_json)
     changeset = Persistence.change_story(%Story{}, story)
 
     assert story.points == nil
