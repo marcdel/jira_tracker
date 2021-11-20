@@ -8,7 +8,7 @@ defmodule JiraTracker.PersistenceTest do
 
     import JiraTracker.PersistenceFixtures
 
-    @invalid_attrs %{name: nil, jira_account: nil, backlog_board_id: nil}
+    @invalid_attrs %{name: nil, jira_account: nil, backlog_board_id: nil, jira_issues_jql: nil}
 
     test "get_team!/1 returns the team with given id" do
       team = team_fixture()
@@ -25,7 +25,8 @@ defmodule JiraTracker.PersistenceTest do
       valid_attrs = %{
         name: "some name",
         jira_account: "acme.atlassian.net",
-        backlog_board_id: 12345
+        backlog_board_id: 12345,
+        jira_issues_jql: "project = 'ACME' AND type = 'Bug' AND status = 'Open'"
       }
 
       assert {:ok, team} = Persistence.create_or_get_team(valid_attrs)
@@ -37,13 +38,15 @@ defmodule JiraTracker.PersistenceTest do
         team_fixture(%{
           name: "some name",
           jira_account: "acme.atlassian.net",
-          backlog_board_id: 12345
+          backlog_board_id: 12345,
+          jira_issues_jql: "project = 'ACME' AND type = 'Bug' AND status = 'Open'"
         })
 
       valid_attrs = %{
         name: "some name",
         jira_account: "acme.atlassian.net",
-        backlog_board_id: 55555
+        backlog_board_id: 55555,
+        jira_issues_jql: "project = 'BEEPBOOP'"
       }
 
       assert {:ok, team} = Persistence.create_or_get_team(valid_attrs)
@@ -51,6 +54,7 @@ defmodule JiraTracker.PersistenceTest do
       assert team.name == "some name"
       assert team.jira_account == "acme.atlassian.net"
       assert team.backlog_board_id == 12345
+      assert team.jira_issues_jql == "project = 'ACME' AND type = 'Bug' AND status = 'Open'"
     end
 
     test "create_or_get_team/1 returns an error tuple when invalid" do
@@ -61,13 +65,15 @@ defmodule JiraTracker.PersistenceTest do
       valid_attrs = %{
         name: "some name",
         jira_account: "acme.atlassian.net",
-        backlog_board_id: 12345
+        backlog_board_id: 12345,
+        jira_issues_jql: "project = 'ACME' AND type = 'Bug' AND status = 'Open'"
       }
 
       assert {:ok, %Team{} = team} = Persistence.create_team(valid_attrs)
       assert team.name == "some name"
       assert team.jira_account == "acme.atlassian.net"
       assert team.backlog_board_id == 12345
+      assert team.jira_issues_jql == "project = 'ACME' AND type = 'Bug' AND status = 'Open'"
     end
 
     test "create_team/1 with invalid data returns error changeset" do

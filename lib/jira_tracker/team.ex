@@ -14,7 +14,7 @@ defmodule JiraTracker.Team do
     %__MODULE__{
       id: team.id,
       name: team.name,
-      backlog: backlog(team),
+      backlog: Backlog.get(team),
       icebox: icebox(team)
     }
   end
@@ -30,13 +30,6 @@ defmodule JiraTracker.Team do
 
   def refresh(team) do
     %{backlog: Backlog.refresh(team), icebox: Icebox.refresh(team)}
-  end
-
-  def backlog(team) do
-    case Backlog.get(team) do
-      %{stories: []} -> Backlog.refresh(team)
-      backlog -> backlog
-    end
   end
 
   def icebox(team) do

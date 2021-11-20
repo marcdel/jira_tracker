@@ -5,6 +5,29 @@ defmodule JiraTracker.JiraTest do
 
   alias JiraTracker.Jira
 
+  describe "fetch_issues" do
+    test "fetches issues from the jira api" do
+      team = team_fixture(%{jira_issues_jql: "project = 'JIRA'"})
+      search_fn = fn "project = 'JIRA'" -> {:ok, [issue_json(), issue_json()]} end
+
+      {:ok, issues} = Jira.fetch_issues(team, search_fn)
+
+      assert Enum.count(issues) == 2
+    end
+
+    test "maps issue json to stories" do
+      team = team_fixture(%{jira_issues_jql: "project = 'JIRA'"})
+
+      search_fn = fn "project = 'JIRA'" ->
+        {:ok, [issue_json(%{"id" => "1", "key" => "ISSUE-4321"})]}
+      end
+
+      {:ok, issues} = Jira.fetch_issues(team, search_fn)
+
+      assert [%{id: "1", jira_key: "ISSUE-4321"}] = issues
+    end
+  end
+
   describe "backlog" do
     test "fetches issues from the jira api for the given board" do
       team = team_fixture(%{name: "My Team", backlog_board_id: 123})
@@ -15,7 +38,7 @@ defmodule JiraTracker.JiraTest do
       assert Enum.count(issues) == 2
     end
 
-    test "maps issue json to issue structs" do
+    test "maps issue json to stories" do
       team = team_fixture(%{name: "My Team", backlog_board_id: 123})
       fetch_fn = fn 123 -> {:ok, [issue_json(%{"id" => "1", "key" => "ISSUE-4321"})]} end
 
