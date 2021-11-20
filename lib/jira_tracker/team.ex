@@ -16,7 +16,7 @@ defmodule JiraTracker.Team do
       name: team.name,
       jira_issues_jql: team.jira_issues_jql,
       backlog: Backlog.get(team),
-      icebox: icebox(team)
+      icebox: Icebox.get(team)
     }
   end
 
