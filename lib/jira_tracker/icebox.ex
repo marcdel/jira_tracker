@@ -11,7 +11,7 @@ defmodule JiraTracker.Icebox do
     {:ok, unsaved_stories} = Jira.fetch_issues(team)
     DbIcebox.add_new_stories(team, unsaved_stories)
 
-    get(team)
+    %{team.icebox | stories: DbIcebox.stories(team)}
   end
 
   @decorate trace("JiraTracker.Icebox.get")

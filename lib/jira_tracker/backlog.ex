@@ -1,18 +1,9 @@
 defmodule JiraTracker.Backlog do
   use OpenTelemetryDecorator
 
-  alias JiraTracker.Jira
   alias JiraTracker.Persistence.Backlog, as: DbBacklog
 
   defstruct open: true, stories: []
-
-  @decorate trace("JiraTracker.Backlog.refresh")
-  def refresh(team) do
-    {:ok, unsaved_stories} = Jira.backlog(team)
-    DbBacklog.add_new_stories(team, unsaved_stories)
-
-    get(team)
-  end
 
   @decorate trace("JiraTracker.Backlog.get")
   def get(team) do
