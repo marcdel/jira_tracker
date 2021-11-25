@@ -1,19 +1,9 @@
 defmodule Jira.Client do
   use OpenTelemetryDecorator
+  require Logger
 
-  alias Jira.AgileAPI
   alias Jira.API
   alias Jira.Credentials
-
-  @team_name_field "Dev Team"
-
-  @decorate trace("Jira.Client.backlog", include: [:board_id])
-  def backlog(board_id) do
-    case AgileAPI.get("/board/#{board_id}/backlog", auth_header()) do
-      {:ok, response} -> {:ok, response |> Map.get(:body) |> Map.get("issues", [])}
-      error -> error
-    end
-  end
 
   @decorate trace("Jira.Client.search", include: [:jql, :url])
   def search(jql) do
@@ -43,13 +33,15 @@ defmodule Jira.Client do
     end
   end
 
-  @decorate trace("Jira.Client.get_issues", include: [:team_name])
-  def get_issues(team_name) do
-    url = "/search?jql=\"#{URI.encode(@team_name_field)}\"=\"#{URI.encode(team_name)}\""
+  @decorate trace("Jira.Client.update", include: [:issue_key])
+  def update(issue_key, fields) do
+    body = Poison.encode!(%{fields: fields})
 
-    case API.get(url, auth_header()) do
-      {:ok, response} -> {:ok, response |> Map.get(:body) |> Map.get("issues", [])}
-      error -> error
+    case API.put("/issue/#{issue_key}", body, auth_header()) do
+      {:ok, %{status_code: 204}} -> :ok
+      # idk lol
+      {:ok, response} -> :error
+      error -> :error
     end
   end
 

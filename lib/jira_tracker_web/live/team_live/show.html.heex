@@ -1,6 +1,6 @@
 <div class="flex max-w-8xl mx-auto mb-4 px-4 sm:px-6 lg:px-8">
   <h1 class="flex-1 text-2xl font-semibold text-gray-900"><%= @team.name %></h1>
-  <button phx-click="refresh"  phx-disable-with="Refreshing from Jira..." class="inline-flex items-center px-1.5 py-0.5">
+  <button phx-click="refresh" phx-disable-with="Refreshing from Jira..." class="inline-flex items-center px-1.5 py-0.5">
     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <title>Refresh from Jira</title>
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -9,7 +9,7 @@
 </div>
 <div class="max-w-8xl mx-auto px-4 sm:px-6 md:px-8">
   <section class="panels">
-    <%= if @team.backlog.open do %>
+    <%= if @team.backlog_open do %>
     <section class="panel w-full">
       <div class="flex flex-col">
         <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -79,7 +79,7 @@
     </section>
     <% end %>
 
-    <%= if @team.icebox.open do %>
+    <%= if @team.icebox_open do %>
     <section class="panel w-full">
       <div class="flex flex-col">
         <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">

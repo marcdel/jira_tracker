@@ -7,6 +7,11 @@ defmodule O11y do
     Span.set_attributes(Tracer.current_span_ctx(), attrs)
   end
 
+  def pipe_span_attribute(attr_value, attr_name) do
+    Span.set_attribute(Tracer.current_span_ctx(), attr_name, attr_value)
+    attr_value
+  end
+
   def add_context_attributes(attrs) do
     current_context = Ctx.get_current()
 

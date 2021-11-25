@@ -13,7 +13,8 @@ defmodule JiraTracker.PersistenceFixtures do
       |> Enum.into(%{
         name: Faker.Team.En.name(),
         jira_account: Faker.Internet.domain_name(),
-        backlog_board_id: System.unique_integer([:positive]),
+        backlog_open: true,
+        icebox_open: true,
         jira_issues_jql: "project = 'ACME' AND type = 'Feature' AND status = 'Closed'"
       })
       |> JiraTracker.Persistence.create_team()

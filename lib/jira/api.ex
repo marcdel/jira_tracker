@@ -15,5 +15,6 @@ defmodule Jira.API do
     headers ++ ["Content-Type": "application/json"]
   end
 
+  def process_response_body(""), do: nil
   def process_response_body(body), do: Poison.decode!(body)
 end

@@ -3,7 +3,7 @@ defmodule JiraTracker.Backlog do
 
   alias JiraTracker.Persistence.Backlog, as: DbBacklog
 
-  defstruct open: true, stories: []
+  defstruct stories: []
 
   @decorate trace("JiraTracker.Backlog.get")
   def get(team) do
