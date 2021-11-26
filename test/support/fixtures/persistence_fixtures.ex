@@ -72,4 +72,23 @@ defmodule JiraTracker.PersistenceFixtures do
 
     story
   end
+
+  @doc """
+  Generate a jira_settings.
+  """
+  def jira_settings_fixture(attrs \\ %{}) do
+    team = Map.get(attrs, :team, team_fixture())
+
+    {:ok, jira_settings} =
+      attrs
+      |> Enum.into(%{
+        team_id: team.id,
+        account_url: "some account_url",
+        issues_jql: "some issues_jql",
+        story_point_field: "some story_point_field"
+      })
+      |> JiraTracker.Persistence.create_jira_settings()
+
+    jira_settings
+  end
 end

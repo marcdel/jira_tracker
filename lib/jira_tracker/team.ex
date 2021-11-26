@@ -9,23 +9,28 @@ defmodule JiraTracker.Team do
   defstruct [
     :id,
     :name,
-    :jira_issues_jql,
     :backlog,
     :icebox,
     :backlog_open,
-    :icebox_open
+    :icebox_open,
+    :jira_issues_jql,
+    :account_url,
+    :story_point_field
   ]
 
   @decorate trace("JiraTracker.Team.load!", include: [:team_id])
   def load!(team_id) do
-    team = Persistence.get_team!(team_id)
+    team = Persistence.get_team!(team_id, :jira_settings)
+    jira_settings = team.jira_settings || %Persistence.JiraSettings{}
 
     %__MODULE__{
       id: team.id,
       name: team.name,
-      jira_issues_jql: team.jira_issues_jql,
       backlog_open: team.backlog_open,
       icebox_open: team.icebox_open,
+      account_url: jira_settings.account_url,
+      jira_issues_jql: jira_settings.issues_jql,
+      story_point_field: jira_settings.story_point_field,
       backlog: Backlog.get(team),
       icebox: Icebox.get(team)
     }

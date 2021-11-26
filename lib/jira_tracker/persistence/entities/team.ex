@@ -4,6 +4,7 @@ defmodule JiraTracker.Persistence.Team do
 
   alias JiraTracker.Persistence.User
   alias JiraTracker.Persistence.Story
+  alias JiraTracker.Persistence.JiraSettings
 
   schema "teams" do
     field :name, :string
@@ -13,6 +14,7 @@ defmodule JiraTracker.Persistence.Team do
     field :icebox_open, :boolean
     has_many :users, User
     has_many :stories, Story
+    has_one :jira_settings, JiraSettings
 
     timestamps()
   end

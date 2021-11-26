@@ -40,8 +40,8 @@ defmodule Jira.Client do
     case API.put("/issue/#{issue_key}", body, auth_header()) do
       {:ok, %{status_code: 204}} -> :ok
       # idk lol
-      {:ok, response} -> :error
-      error -> :error
+      {:ok, _response} -> :error
+      _error -> :error
     end
   end
 

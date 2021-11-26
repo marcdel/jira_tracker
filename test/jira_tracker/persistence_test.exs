@@ -15,6 +15,14 @@ defmodule JiraTracker.PersistenceTest do
       assert Persistence.get_team!(team.id) == team
     end
 
+    test "get_team!/1 preloads the given fields" do
+      team = team_fixture()
+      settings = jira_settings_fixture(%{team: team})
+
+      %{jira_settings: jira_settings} = Persistence.get_team!(team.id, [:jira_settings])
+      assert jira_settings == settings
+    end
+
     test "get_team_by_name/1 returns the team with given name" do
       team = team_fixture()
       assert Persistence.get_team_by_name(team.name) == team
@@ -269,6 +277,78 @@ defmodule JiraTracker.PersistenceTest do
     test "change_story/1 returns a story changeset" do
       story = story_fixture()
       assert %Ecto.Changeset{} = Persistence.change_story(story)
+    end
+  end
+
+  describe "jira_settings" do
+    alias JiraTracker.Persistence.JiraSettings
+
+    import JiraTracker.PersistenceFixtures
+
+    @invalid_attrs %{account_url: nil, issues_jql: nil, story_point_field: nil}
+
+    test "get_jira_settings!/1 returns the jira_settings with given id" do
+      jira_settings = jira_settings_fixture()
+      assert Persistence.get_jira_settings!(jira_settings.id) == jira_settings
+    end
+
+    test "create_jira_settings/1 with valid data creates a jira_settings" do
+      team = team_fixture()
+
+      valid_attrs = %{
+        team_id: team.id,
+        account_url: "some account_url",
+        issues_jql: "some issues_jql",
+        story_point_field: "some story_point_field"
+      }
+
+      assert {:ok, %JiraSettings{} = jira_settings} =
+               Persistence.create_jira_settings(valid_attrs)
+
+      assert jira_settings.account_url == "some account_url"
+      assert jira_settings.issues_jql == "some issues_jql"
+      assert jira_settings.story_point_field == "some story_point_field"
+    end
+
+    test "create_jira_settings/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Persistence.create_jira_settings(@invalid_attrs)
+    end
+
+    test "update_jira_settings/2 with valid data updates the jira_settings" do
+      jira_settings = jira_settings_fixture()
+
+      update_attrs = %{
+        account_url: "some updated account_url",
+        issues_jql: "some updated issues_jql",
+        story_point_field: "some updated story_point_field"
+      }
+
+      assert {:ok, %JiraSettings{} = jira_settings} =
+               Persistence.update_jira_settings(jira_settings, update_attrs)
+
+      assert jira_settings.account_url == "some updated account_url"
+      assert jira_settings.issues_jql == "some updated issues_jql"
+      assert jira_settings.story_point_field == "some updated story_point_field"
+    end
+
+    test "update_jira_settings/2 with invalid data returns error changeset" do
+      jira_settings = jira_settings_fixture()
+
+      assert {:error, %Ecto.Changeset{}} =
+               Persistence.update_jira_settings(jira_settings, @invalid_attrs)
+
+      assert jira_settings == Persistence.get_jira_settings!(jira_settings.id)
+    end
+
+    test "delete_jira_settings/1 deletes the jira_settings" do
+      jira_settings = jira_settings_fixture()
+      assert {:ok, %JiraSettings{}} = Persistence.delete_jira_settings(jira_settings)
+      assert_raise Ecto.NoResultsError, fn -> Persistence.get_jira_settings!(jira_settings.id) end
+    end
+
+    test "change_jira_settings/1 returns a jira_settings changeset" do
+      jira_settings = jira_settings_fixture()
+      assert %Ecto.Changeset{} = Persistence.change_jira_settings(jira_settings)
     end
   end
 end

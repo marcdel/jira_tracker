@@ -24,6 +24,12 @@ defmodule JiraTracker.Persistence do
   """
   def get_team!(id), do: Repo.get!(Team, id)
 
+  def get_team!(id, preloads) do
+    Team
+    |> Repo.get!(id)
+    |> Repo.preload(preloads)
+  end
+
   @doc """
   Gets a single team by name.
 
@@ -336,5 +342,88 @@ defmodule JiraTracker.Persistence do
   """
   def change_story(%Story{} = story, attrs \\ %{}) do
     Story.changeset(story, attrs)
+  end
+
+  alias JiraTracker.Persistence.JiraSettings
+
+  @doc """
+  Gets a single jira_settings.
+
+  Raises `Ecto.NoResultsError` if the Jira settings does not exist.
+
+  ## Examples
+
+      iex> get_jira_settings!(123)
+      %JiraSettings{}
+
+      iex> get_jira_settings!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_jira_settings!(id), do: Repo.get!(JiraSettings, id)
+
+  @doc """
+  Creates a jira_settings.
+
+  ## Examples
+
+      iex> create_jira_settings(%{field: value})
+      {:ok, %JiraSettings{}}
+
+      iex> create_jira_settings(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_jira_settings(attrs \\ %{}) do
+    %JiraSettings{}
+    |> JiraSettings.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a jira_settings.
+
+  ## Examples
+
+      iex> update_jira_settings(jira_settings, %{field: new_value})
+      {:ok, %JiraSettings{}}
+
+      iex> update_jira_settings(jira_settings, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_jira_settings(%JiraSettings{} = jira_settings, attrs) do
+    jira_settings
+    |> JiraSettings.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a jira_settings.
+
+  ## Examples
+
+      iex> delete_jira_settings(jira_settings)
+      {:ok, %JiraSettings{}}
+
+      iex> delete_jira_settings(jira_settings)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_jira_settings(%JiraSettings{} = jira_settings) do
+    Repo.delete(jira_settings)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking jira_settings changes.
+
+  ## Examples
+
+      iex> change_jira_settings(jira_settings)
+      %Ecto.Changeset{data: %JiraSettings{}}
+
+  """
+  def change_jira_settings(%JiraSettings{} = jira_settings, attrs \\ %{}) do
+    JiraSettings.changeset(jira_settings, attrs)
   end
 end

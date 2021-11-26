@@ -27,6 +27,23 @@ defmodule JiraTracker.TeamTest do
       assert %Icebox{stories: [^icebox_story]} = team.icebox
       assert team.icebox_open == true
     end
+
+    test "loads the jira settings" do
+      team_entity = team_fixture()
+
+      jira_settings_fixture(%{
+        team: team_entity,
+        team_id: team_entity.id,
+        account_url: "example.jira.net",
+        issues_jql: "project = 'JIRA'",
+        story_point_field: "customfield_10029"
+      })
+
+      team = Team.load!(team_entity.id)
+      assert team.account_url == "example.jira.net"
+      assert team.jira_issues_jql == "project = 'JIRA'"
+      assert team.story_point_field == "customfield_10029"
+    end
   end
 
   describe "toggle_backlog" do
