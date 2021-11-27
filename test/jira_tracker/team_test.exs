@@ -33,7 +33,6 @@ defmodule JiraTracker.TeamTest do
 
       jira_settings_fixture(%{
         team: team_entity,
-        team_id: team_entity.id,
         account_url: "example.jira.net",
         issues_jql: "project = 'JIRA'",
         story_point_field: "customfield_10029"

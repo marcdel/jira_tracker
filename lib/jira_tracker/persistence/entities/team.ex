@@ -8,8 +8,6 @@ defmodule JiraTracker.Persistence.Team do
 
   schema "teams" do
     field :name, :string
-    field :jira_account, :string
-    field :jira_issues_jql, :string
     field :backlog_open, :boolean
     field :icebox_open, :boolean
     has_many :users, User
@@ -24,12 +22,10 @@ defmodule JiraTracker.Persistence.Team do
     team
     |> cast(attrs, [
       :name,
-      :jira_account,
-      :jira_issues_jql,
       :backlog_open,
       :icebox_open
     ])
-    |> validate_required([:name, :jira_account, :jira_issues_jql])
-    |> unique_constraint([:name, :jira_account])
+    |> validate_required([:name])
+    |> unique_constraint([:name])
   end
 end

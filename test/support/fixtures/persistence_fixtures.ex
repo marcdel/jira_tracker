@@ -14,12 +14,30 @@ defmodule JiraTracker.PersistenceFixtures do
         name: Faker.Team.En.name(),
         jira_account: Faker.Internet.domain_name(),
         backlog_open: true,
-        icebox_open: true,
-        jira_issues_jql: "project = 'ACME' AND type = 'Feature' AND status = 'Closed'"
+        icebox_open: true
       })
       |> JiraTracker.Persistence.create_team()
 
     team
+  end
+
+  def team_with_settings_fixture(attrs \\ %{}) do
+    {:ok, team} =
+      attrs
+      |> Enum.into(%{
+        name: Faker.Team.En.name(),
+        jira_account: Faker.Internet.domain_name(),
+        backlog_open: true,
+        icebox_open: true
+      })
+      |> JiraTracker.Persistence.create_team()
+
+    attrs
+    |> Map.get(:jira_settings, %{})
+    |> Map.put(:team, team)
+    |> jira_settings_fixture()
+
+    JiraTracker.Repo.preload(team, :jira_settings)
   end
 
   @doc """

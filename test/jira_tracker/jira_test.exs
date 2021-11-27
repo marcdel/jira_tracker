@@ -7,7 +7,7 @@ defmodule JiraTracker.JiraTest do
 
   describe "fetch_issues" do
     test "fetches issues from the jira api" do
-      team = team_fixture(%{jira_issues_jql: "project = 'JIRA'"})
+      team = team_with_settings_fixture(%{jira_settings: %{issues_jql: "project = 'JIRA'"}})
       search_fn = fn "project = 'JIRA'" -> {:ok, [issue_json(), issue_json()]} end
 
       {:ok, issues} = Jira.fetch_issues(team, search_fn)
@@ -16,7 +16,14 @@ defmodule JiraTracker.JiraTest do
     end
 
     test "maps issue json to stories" do
-      team = team_fixture(%{jira_issues_jql: "project = 'JIRA'"})
+      team =
+        team_with_settings_fixture(%{
+          jira_settings: %{
+            account_url: "example.jira.net",
+            issues_jql: "project = 'JIRA'",
+            story_point_field: "customfield_10029"
+          }
+        })
 
       search_fn = fn "project = 'JIRA'" ->
         {:ok, [issue_json(%{"id" => "1", "key" => "ISSUE-4321"})]}

@@ -8,7 +8,7 @@ defmodule JiraTracker.Jira do
 
   @decorate trace("JiraTracker.Jira.search", include: [:jql])
   def fetch_issues(team, search \\ @search) do
-    team.jira_issues_jql
+    team.jira_settings.issues_jql
     |> search.()
     |> case do
       {:ok, issues_json} ->

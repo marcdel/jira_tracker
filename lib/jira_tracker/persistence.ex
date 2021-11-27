@@ -47,30 +47,6 @@ defmodule JiraTracker.Persistence do
   def get_team_by_name(name), do: Repo.get_by(Team, name: name)
 
   @doc """
-  Creates a team or get the existing one.
-
-  The create_team/1 function uses the [on_conflict: :nothing] option
-  to avoid creating duplicate teams, so if an :id is not created, we
-  look up the team by the unique key to ensure we have the correct data.
-
-  ## Examples
-
-      iex> create_or_get_team(%{field: value})
-      {:ok, %User{}}
-
-      iex> create_or_get_team(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_or_get_team(attrs \\ %{}) do
-    case create_team(attrs) do
-      {:ok, %{id: nil, name: name}} -> {:ok, get_team_by_name(name)}
-      {:ok, team} -> {:ok, team}
-      {:error, error} -> {:error, error}
-    end
-  end
-
-  @doc """
   Creates a team.
 
   ## Examples
