@@ -15,7 +15,7 @@ defmodule JiraTracker.TeamTest do
         Team.create(%{
           name: "Team 1",
           jira_issues_jql: "project = 'TEST'",
-          account_url: "https://example.jira.com"
+          account_url: "example.jira.com"
         })
 
       %{id: found_team_id} = Persistence.get_team_by_name("Team 1")
