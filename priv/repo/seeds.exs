@@ -9,3 +9,10 @@
 #
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
+
+{:ok, _} =
+  JiraTracker.Team.create(%{
+    name: "Teamsters",
+    jira_issues_jql: "order by created DESC",
+    account_url: "solid-af.atlassian.net"
+  })

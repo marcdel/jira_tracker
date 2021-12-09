@@ -21,11 +21,12 @@ defmodule JiraTracker.Team do
   @decorate trace("JiraTracker.Team.create")
   def create(attrs) do
     with {:ok, team} <- Persistence.create_team(%{name: attrs.name}),
-         {:ok, _jira_settings} <- Persistence.create_jira_settings(%{
-           team_id: team.id,
-           issues_jql: attrs.jira_issues_jql,
-           account_url: attrs.account_url
-         }) do
+         {:ok, _jira_settings} <-
+           Persistence.create_jira_settings(%{
+             team_id: team.id,
+             issues_jql: attrs.jira_issues_jql,
+             account_url: attrs.account_url
+           }) do
       {:ok, load!(team.id)}
     else
       error -> error
