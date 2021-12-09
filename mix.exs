@@ -64,7 +64,8 @@ defmodule JiraTracker.MixProject do
       {:opentelemetry_ecto, "~> 1.0.0-rc.3"},
       {:open_telemetry_decorator, github: "marcdel/open_telemetry_decorator"},
       {:ex_jira, git: "https://github.com/marcdel/elixir-ex_jira.git", tag: "master"},
-      {:faker, "~> 0.16", only: :test}
+      {:faker, "~> 0.16", only: :test},
+      {:mox, "~> 1.0.1", only: :test}
     ]
   end
 

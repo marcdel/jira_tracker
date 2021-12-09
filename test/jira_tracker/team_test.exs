@@ -1,11 +1,30 @@
 defmodule JiraTracker.TeamTest do
   use JiraTracker.DataCase
   import JiraTracker.PersistenceFixtures
+  import JiraTracker.JiraIssuesFixtures
 
   alias JiraTracker.Team
   alias JiraTracker.Backlog
   alias JiraTracker.Icebox
   alias JiraTracker.Persistence
+  alias JiraTracker.StoryMapper
+
+  describe "create" do
+    test "creates a team record" do
+      {:ok, %Team{id: created_team_id}} =
+        Team.create(%{
+          name: "Team 1",
+          jira_issues_jql: "project = 'TEST'",
+          account_url: "https://example.jira.com"
+        })
+
+      %{id: found_team_id} = Persistence.get_team_by_name("Team 1")
+      assert(found_team_id == created_team_id)
+    end
+
+    test "creates a jira settings record" do
+    end
+  end
 
   describe "load/1" do
     setup do
@@ -29,14 +48,14 @@ defmodule JiraTracker.TeamTest do
     end
 
     test "loads the jira settings" do
-      team_entity = team_fixture()
-
-      jira_settings_fixture(%{
-        team: team_entity,
-        account_url: "example.jira.net",
-        issues_jql: "project = 'JIRA'",
-        story_point_field: "customfield_10029"
-      })
+      team_entity =
+        team_with_settings_fixture(%{
+          jira_settings: %{
+            account_url: "example.jira.net",
+            issues_jql: "project = 'JIRA'",
+            story_point_field: "customfield_10029"
+          }
+        })
 
       team = Team.load!(team_entity.id)
       assert team.account_url == "example.jira.net"
@@ -89,7 +108,42 @@ defmodule JiraTracker.TeamTest do
 
     test "returns team with updated story", %{team: team, story: story} do
       assert {:ok, team} = Team.point_story(team, story.id, 8, FakeJira)
-      assert %{backlog: %{stories: [%{points: 8}]}} = team
+
+      assert %{
+               backlog: %{
+                 stories: [%{points: 8}]
+               }
+             } = team
+    end
+  end
+
+  describe "refresh/1" do
+    test "refreshes the icebox from jira" do
+      %{id: team_id} = team_with_settings_fixture()
+      team = Team.load!(team_id)
+
+      stories =
+        [issue_json_fixture(%{"key" => "ISSUE-1"}), issue_json_fixture(%{"key" => "ISSUE-2"})]
+        |> Enum.map(&StoryMapper.issue_to_story(team, &1))
+
+      JiraTracker.JiraMock
+      |> expect(:fetch_issues, fn _team -> {:ok, stories} end)
+
+      assert {
+               :ok,
+               %{
+                 icebox: %{
+                   stories: icebox_stories
+                 }
+               }
+             } = Team.refresh(team)
+
+      assert [%{jira_key: "ISSUE-1"}, %{jira_key: "ISSUE-2"}] = icebox_stories
+
+      assert [%{jira_key: "ISSUE-1"}, %{jira_key: "ISSUE-2"}] =
+               team_id
+               |> Persistence.list_stories(in_backlog: false)
+               |> Enum.sort_by(&Map.get(&1, :jira_key))
     end
   end
 end

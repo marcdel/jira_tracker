@@ -3,6 +3,10 @@ defmodule O11y do
   require OpenTelemetry.Tracer, as: Tracer
   require OpenTelemetry.Ctx, as: Ctx
 
+  def add_span_attribute(key, value) do
+    Span.set_attribute(Tracer.current_span_ctx(), key, value)
+  end
+
   def add_span_attributes(attrs) do
     Span.set_attributes(Tracer.current_span_ctx(), attrs)
   end

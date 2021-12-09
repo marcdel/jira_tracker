@@ -23,6 +23,11 @@ defmodule JiraTrackerWeb.ChannelCase do
       import Phoenix.ChannelTest
       import JiraTrackerWeb.ChannelCase
 
+      import Mox
+
+      # Make sure mocks are verified when the test exits
+      setup :verify_on_exit!
+
       # The default endpoint for testing
       @endpoint JiraTrackerWeb.Endpoint
     end

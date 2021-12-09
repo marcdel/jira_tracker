@@ -6,6 +6,15 @@ defmodule JiraTracker.Persistence.Team do
   alias JiraTracker.Persistence.Story
   alias JiraTracker.Persistence.JiraSettings
 
+  @type t :: %__MODULE__{
+          name: String.t(),
+          backlog_open: boolean(),
+          icebox_open: boolean(),
+          users: list(User.t()),
+          stories: list(Story.t()),
+          jira_settings: JiraSettings.t()
+        }
+
   schema "teams" do
     field :name, :string
     field :backlog_open, :boolean

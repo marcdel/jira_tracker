@@ -61,13 +61,13 @@ defmodule JiraTracker.PersistenceFixtures do
   @doc """
   Generate a unique story jira_key.
   """
-  def unique_story_jira_key, do: "ISSUE-#{System.unique_integer([:positive])}"
+  def unique_story_key, do: "ISSUE-#{System.unique_integer([:positive])}"
 
   @doc """
   Generate a story.
   """
   def story_fixture(attrs \\ %{}) do
-    team = team_fixture()
+    team = Map.get(attrs, :team, team_fixture())
     reporter = user_fixture()
     assignee = user_fixture()
 
@@ -78,7 +78,7 @@ defmodule JiraTracker.PersistenceFixtures do
         reporter_id: reporter.id,
         assignee_id: assignee.id,
         description: "some description",
-        jira_key: unique_story_jira_key(),
+        jira_key: unique_story_key(),
         labels: ["label 1", "label 2"],
         state: "some state",
         points: 42,

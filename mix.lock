@@ -32,6 +32,7 @@
   "metrics": {:hex, :metrics, "1.0.1", "25f094dea2cda98213cecc3aeff09e940299d950904393b2a29d191c346a8486", [:rebar3], [], "hexpm", "69b09adddc4f74a40716ae54d140f93beb0fb8978d8636eaded0c31b6f099f16"},
   "mime": {:hex, :mime, "2.0.1", "0de4c81303fe07806ebc2494d5321ce8fb4df106e34dd5f9d787b637ebadc256", [:mix], [], "hexpm", "7a86b920d2aedce5fb6280ac8261ac1a739ae6c1a1ad38f5eadf910063008942"},
   "mimerl": {:hex, :mimerl, "1.2.0", "67e2d3f571088d5cfd3e550c383094b47159f3eee8ffa08e64106cdf5e981be3", [:rebar3], [], "hexpm", "f278585650aa581986264638ebf698f8bb19df297f66ad91b18910dfc6e19323"},
+  "mox": {:hex, :mox, "1.0.1", "b651bf0113265cda0ba3a827fcb691f848b683c373b77e7d7439910a8d754d6e", [:mix], [], "hexpm", "35bc0dea5499d18db4ef7fe4360067a59b06c74376eb6ab3bd67e6295b133469"},
   "open_telemetry_decorator": {:git, "https://github.com/marcdel/open_telemetry_decorator.git", "7a7992f9b0e3196bb342f6de0e09fceeda59e1b6", []},
   "opentelemetry": {:git, "https://github.com/open-telemetry/opentelemetry-erlang.git", "fab724a81179ffd8fa1b1b283fb854e70f963b29", [sparse: "apps/opentelemetry"]},
   "opentelemetry_api": {:git, "https://github.com/open-telemetry/opentelemetry-erlang.git", "fab724a81179ffd8fa1b1b283fb854e70f963b29", [sparse: "apps/opentelemetry_api"]},

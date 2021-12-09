@@ -46,6 +46,12 @@ defmodule JiraTracker.Persistence do
   """
   def get_team_by_name(name), do: Repo.get_by(Team, name: name)
 
+  def get_team_by_name(name, preloads) do
+    Team
+    |> Repo.get_by(name: name)
+    |> Repo.preload(preloads)
+  end
+
   @doc """
   Creates a team.
 

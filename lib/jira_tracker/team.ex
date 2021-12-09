@@ -18,22 +18,25 @@ defmodule JiraTracker.Team do
     :story_point_field
   ]
 
+  @decorate trace("JiraTracker.Team.create")
+  def create(attrs) do
+    with {:ok, team} <- Persistence.create_team(%{name: attrs.name}),
+         {:ok, _jira_settings} <- Persistence.create_jira_settings(%{
+           team_id: team.id,
+           issues_jql: attrs.jira_issues_jql,
+           account_url: attrs.account_url
+         }) do
+      {:ok, load!(team.id)}
+    else
+      error -> error
+    end
+  end
+
   @decorate trace("JiraTracker.Team.load!", include: [:team_id])
   def load!(team_id) do
-    team = Persistence.get_team!(team_id, :jira_settings)
-    jira_settings = team.jira_settings || %Persistence.JiraSettings{}
-
-    %__MODULE__{
-      id: team.id,
-      name: team.name,
-      backlog_open: team.backlog_open,
-      icebox_open: team.icebox_open,
-      account_url: jira_settings.account_url,
-      jira_issues_jql: jira_settings.issues_jql,
-      story_point_field: jira_settings.story_point_field,
-      backlog: Backlog.get(team),
-      icebox: Icebox.get(team)
-    }
+    team_id
+    |> Persistence.get_team!(:jira_settings)
+    |> team_entity_to_team()
   end
 
   @decorate trace("JiraTracker.Team.toggle_backlog")
@@ -66,14 +69,36 @@ defmodule JiraTracker.Team do
     end
   end
 
-  def refresh(team) do
-    %{team | backlog: Backlog.get(team), icebox: Icebox.refresh(team)}
+  alias JiraTracker.Persistence.Icebox, as: DbIcebox
+
+  def refresh(%{id: team_id} = team) do
+    with team_entity <- Persistence.get_team!(team_id, :jira_settings),
+         {:ok, unsaved_stories} <- jira().fetch_issues(team_entity),
+         _results <- DbIcebox.add_new_stories(team_entity, unsaved_stories),
+         icebox_stories <- DbIcebox.stories(team) do
+      {:ok, put_in(team.icebox.stories, icebox_stories)}
+    else
+      _error -> {:error, team}
+    end
   end
 
-  def icebox(team) do
-    case Icebox.get(team) do
-      %{stories: []} -> Icebox.refresh(team)
-      icebox -> icebox
-    end
+  defp team_entity_to_team(team_entity) do
+    jira_settings = team_entity.jira_settings || %Persistence.JiraSettings{}
+
+    %__MODULE__{
+      id: team_entity.id,
+      name: team_entity.name,
+      backlog_open: team_entity.backlog_open,
+      icebox_open: team_entity.icebox_open,
+      account_url: jira_settings.account_url,
+      jira_issues_jql: jira_settings.issues_jql,
+      story_point_field: jira_settings.story_point_field,
+      backlog: Backlog.get(team_entity),
+      icebox: Icebox.get(team_entity)
+    }
+  end
+
+  defp jira do
+    Application.get_env(:jira_tracker, :jira, Jira)
   end
 end

@@ -24,6 +24,11 @@ defmodule JiraTracker.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import JiraTracker.DataCase
+
+      import Mox
+
+      # Make sure mocks are verified when the test exits
+      setup :verify_on_exit!
     end
   end
 

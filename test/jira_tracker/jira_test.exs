@@ -48,24 +48,33 @@ defmodule JiraTracker.JiraTest do
       end
     end
 
-    test "gets the story point field" do
-      team = team_fixture()
+    test "only calls the jira custom fields endpoint once" do
+      team = team_with_settings_fixture(%{jira_settings: %{story_point_field: nil}})
       issue_key = "ISSUE-4321"
       points = 5
 
       assert :ok = Jira.point_story(team, issue_key, points, FakeJiraClient)
-
       assert_receive(:custom_fields)
+
+      team =
+        team
+        |> JiraTracker.Repo.reload!()
+        |> JiraTracker.Repo.preload(:jira_settings)
+
+      assert :ok = Jira.point_story(team, issue_key, points, FakeJiraClient)
+      refute_receive(:custom_fields)
     end
 
     test "updates the story point field on the issue to the specified value" do
-      team = team_fixture()
+      team =
+        team_with_settings_fixture(%{jira_settings: %{story_point_field: "customfield_420666"}})
+
       issue_key = "ISSUE-4321"
       points = 5
 
       assert :ok = Jira.point_story(team, issue_key, points, FakeJiraClient)
 
-      assert_receive({:update, "ISSUE-4321", %{"customfield_10029" => 5}})
+      assert_receive({:update, "ISSUE-4321", %{"customfield_420666" => 5}})
     end
   end
 end

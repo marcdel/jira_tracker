@@ -24,6 +24,11 @@ defmodule JiraTrackerWeb.ConnCase do
       import Phoenix.ConnTest
       import JiraTrackerWeb.ConnCase
 
+      import Mox
+
+      # Make sure mocks are verified when the test exits
+      setup :verify_on_exit!
+
       alias JiraTrackerWeb.Router.Helpers, as: Routes
 
       # The default endpoint for testing

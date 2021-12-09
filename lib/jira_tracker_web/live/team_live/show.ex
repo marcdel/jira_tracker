@@ -35,8 +35,11 @@ defmodule JiraTrackerWeb.TeamLive.Show do
   @impl true
   @decorate trace("JiraTrackerWeb.TeamLive.Show.refresh")
   def handle_event("refresh", _value, socket) do
-    team = Team.refresh(socket.assigns.team)
-    {:noreply, assign(socket, :team, team)}
+    case Team.refresh(socket.assigns.team) do
+      {:ok, team} -> {:noreply, assign(socket, :team, team)}
+      # TODO: show an error
+      {:error, team} -> {:noreply, assign(socket, :team, team)}
+    end
   end
 
   @impl true
