@@ -4,6 +4,7 @@ defmodule JiraTracker.JiraTest do
   import JiraTracker.PersistenceFixtures
 
   alias JiraTracker.Jira
+  alias JiraTracker.JiraClientMock
 
   describe "fetch_issues" do
     test "fetches issues from the jira api" do
@@ -36,45 +37,56 @@ defmodule JiraTracker.JiraTest do
   end
 
   describe "point_story" do
-    defmodule FakeJiraClient do
-      def custom_fields do
-        send(self(), :custom_fields)
-        {:ok, [%{"id" => "customfield_10029", "name" => "Story Points"}]}
-      end
-
-      def update(issue_key, fields) do
-        send(self(), {:update, issue_key, fields})
-        :ok
-      end
-    end
-
     test "only calls the jira custom fields endpoint once" do
+      JiraClientMock
+      |> expect(:custom_fields, 1, fn ->
+        {:ok, [%{"id" => "customfield_10029", "name" => "Story Points"}]}
+      end)
+      |> expect(:update, 2, fn _key, _fields -> :ok end)
+
       team = team_with_settings_fixture(%{jira_settings: %{story_point_field: nil}})
       issue_key = "ISSUE-4321"
       points = 5
 
-      assert :ok = Jira.point_story(team, issue_key, points, FakeJiraClient)
-      assert_receive(:custom_fields)
+      assert :ok = Jira.point_story(team, issue_key, points)
 
       team =
         team
         |> JiraTracker.Repo.reload!()
         |> JiraTracker.Repo.preload(:jira_settings)
 
-      assert :ok = Jira.point_story(team, issue_key, points, FakeJiraClient)
-      refute_receive(:custom_fields)
+      assert :ok = Jira.point_story(team, issue_key, points)
+    end
+
+    test "updates the jira_settings table with the point field id" do
+      JiraClientMock
+      |> expect(:custom_fields, fn ->
+        {:ok, [%{"id" => "customfield_12345", "name" => "Story Points"}]}
+      end)
+      |> expect(:update, fn _key, _fields -> :ok end)
+
+      team = team_with_settings_fixture(%{jira_settings: %{story_point_field: nil}})
+
+      assert :ok = Jira.point_story(team, "ISSUE-4321", 3)
+
+      team =
+        team
+        |> JiraTracker.Repo.reload!()
+        |> JiraTracker.Repo.preload(:jira_settings)
+
+      assert team.jira_settings.story_point_field == "customfield_12345"
     end
 
     test "updates the story point field on the issue to the specified value" do
+      expect(JiraClientMock, :update, fn "ISSUE-4321", %{"customfield_420666" => 5} -> :ok end)
+
       team =
         team_with_settings_fixture(%{jira_settings: %{story_point_field: "customfield_420666"}})
 
       issue_key = "ISSUE-4321"
       points = 5
 
-      assert :ok = Jira.point_story(team, issue_key, points, FakeJiraClient)
-
-      assert_receive({:update, "ISSUE-4321", %{"customfield_420666" => 5}})
+      assert :ok = Jira.point_story(team, issue_key, points)
     end
   end
 end

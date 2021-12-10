@@ -5,6 +5,16 @@ defmodule Jira.Client do
   alias Jira.API
   alias Jira.Credentials
 
+  @type jql :: String.t()
+  @type issue_json :: map()
+
+  @type key :: String.t()
+  @type fields :: map()
+
+  @callback search(jql) :: {:ok, list(issue_json)} | {:error, any()}
+  @callback custom_fields() :: {:ok, map()} | {:error, any()}
+  @callback update(key, fields) :: :ok | :error
+
   @decorate trace("Jira.Client.search", include: [:jql, :url])
   def search(jql) do
     url = "/search?jql=#{URI.encode(jql)}"
