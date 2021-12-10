@@ -18,6 +18,7 @@ defmodule Jira.Client do
   @decorate trace("Jira.Client.search", include: [:jql, :url])
   def search(jql) do
     url = "/search?jql=#{URI.encode(jql)}"
+    O11y.add_span_attributes(url: url)
 
     case API.get(url, auth_header()) do
       {:ok, response} ->
@@ -31,6 +32,8 @@ defmodule Jira.Client do
         {:ok, issues}
 
       error ->
+        O11y.add_span_attributes(status_code: 500)
+        Logger.error(inspect(error))
         error
     end
   end
@@ -38,8 +41,12 @@ defmodule Jira.Client do
   @decorate trace("Jira.Client.custom_fields")
   def custom_fields do
     case API.get("/field", auth_header()) do
-      {:ok, response} -> {:ok, Map.get(response, :body, [])}
-      error -> error
+      {:ok, response} ->
+        {:ok, Map.get(response, :body, [])}
+
+      error ->
+        Logger.error(inspect(error))
+        error
     end
   end
 
@@ -48,10 +55,17 @@ defmodule Jira.Client do
     body = Poison.encode!(%{fields: fields})
 
     case API.put("/issue/#{issue_key}", body, auth_header()) do
-      {:ok, %{status_code: 204}} -> :ok
+      {:ok, %{status_code: 204}} ->
+        :ok
+
       # idk lol
-      {:ok, _response} -> :error
-      _error -> :error
+      {:ok, response} ->
+        Logger.error(inspect(response))
+        :error
+
+      error ->
+        Logger.error(inspect(error))
+        :error
     end
   end
 

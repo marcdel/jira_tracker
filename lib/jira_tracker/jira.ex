@@ -1,5 +1,6 @@
 defmodule JiraTracker.Jira do
   use OpenTelemetryDecorator
+  require Logger
 
   alias Jira.Client, as: JiraClient
   alias JiraTracker.Persistence
@@ -14,7 +15,7 @@ defmodule JiraTracker.Jira do
 
   @search &JiraClient.search/1
 
-  @decorate trace("JiraTracker.Jira.search")
+  @decorate trace("JiraTracker.Jira.fetch_issues")
   def fetch_issues(team, search \\ @search) do
     O11y.add_span_attributes(team_id: team.id, jql: team.jira_settings.issues_jql)
 
@@ -34,6 +35,7 @@ defmodule JiraTracker.Jira do
         {:ok, stories}
 
       error ->
+        Logger.error(inspect(error))
         error
     end
   end
