@@ -6,6 +6,7 @@ defmodule JiraTracker.TeamTest do
   alias JiraTracker.Team
   alias JiraTracker.Backlog
   alias JiraTracker.Icebox
+  alias JiraTracker.JiraMock
   alias JiraTracker.Persistence
   alias JiraTracker.StoryMapper
 
@@ -84,36 +85,29 @@ defmodule JiraTracker.TeamTest do
     setup do
       team = team_fixture()
       story = story_fixture(%{team_id: team.id, jira_key: "ISSUE-1", in_backlog: true})
+
       {:ok, team: team, story: story}
     end
 
-    defmodule FakeJira do
-      def point_story(team, jira_key, points) do
-        send(self(), {:point_story, team.id, jira_key, points})
-        :ok
-      end
-    end
-
     test "updates the story in the database", %{team: team, story: story} do
-      assert {:ok, _} = Team.point_story(team, story.id, 5, FakeJira)
+      expect(JiraMock, :point_story, fn _team, _jira_key, _points -> :ok end)
+      assert {:ok, _} = Team.point_story(team, story.id, 5)
       assert %{points: 5} = Persistence.get_story!(story.id)
     end
 
     test "updates the issue in jira", %{team: team, story: story} do
-      %{id: team_id} = team
       %{id: story_id, jira_key: key} = story
-      assert {:ok, _} = Team.point_story(team, story_id, 3, FakeJira)
-      assert_receive({:point_story, ^team_id, ^key, 3})
+      expect(JiraMock, :point_story, fn ^team, ^key, 3 -> :ok end)
+      assert {:ok, _} = Team.point_story(team, story_id, 3)
     end
 
     test "returns team with updated story", %{team: team, story: story} do
-      assert {:ok, team} = Team.point_story(team, story.id, 8, FakeJira)
+      %{id: story_id, jira_key: key} = story
+      expect(JiraMock, :point_story, fn ^team, ^key, 8 -> :ok end)
 
-      assert %{
-               backlog: %{
-                 stories: [%{points: 8}]
-               }
-             } = team
+      assert {:ok, updated_team} = Team.point_story(team, story_id, 8)
+
+      assert %{backlog: %{stories: [%{points: 8}]}} = updated_team
     end
   end
 
@@ -129,15 +123,8 @@ defmodule JiraTracker.TeamTest do
       JiraTracker.JiraMock
       |> expect(:fetch_issues, fn _team -> {:ok, stories} end)
 
-      assert {
-               :ok,
-               %{
-                 icebox: %{
-                   stories: icebox_stories
-                 }
-               }
-             } = Team.refresh(team)
-
+      assert {:ok, updated_team} = Team.refresh(team)
+      assert %{icebox: %{stories: icebox_stories}} = updated_team
       assert [%{jira_key: "ISSUE-1"}, %{jira_key: "ISSUE-2"}] = icebox_stories
 
       assert [%{jira_key: "ISSUE-1"}, %{jira_key: "ISSUE-2"}] =

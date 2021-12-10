@@ -6,7 +6,11 @@ defmodule JiraTracker.Jira do
   alias JiraTracker.Story
   alias JiraTracker.StoryMapper
 
+  @type story_id :: String.t()
+  @type story_points :: Integer.t()
+
   @callback fetch_issues(Persistence.Team.t()) :: {:ok, list(Story)}
+  @callback point_story(Persistence.Team.t(), story_id, story_points) :: :ok | :error
 
   @search &JiraClient.search/1
 
