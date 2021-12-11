@@ -46,7 +46,7 @@ defmodule JiraTrackerWeb.TeamLive.Show do
   @decorate trace("JiraTrackerWeb.TeamLive.Show.point_story")
   def handle_event("point_story", %{"id" => story_id, "points" => points}, socket) do
     with {points, _} <- Integer.parse(points),
-         {:ok, team} = Team.point_story(socket.assigns.team, story_id, points) do
+         {:ok, team} = Team.point_story(socket.assigns.team.id, story_id, points) do
       {:noreply, assign(socket, :team, team)}
     else
       _ -> {:noreply, socket}

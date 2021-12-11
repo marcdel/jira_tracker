@@ -59,10 +59,10 @@ defmodule JiraTracker.Team do
   end
 
   @decorate trace("JiraTracker.Team.point_story", include: [:team_id, :story_id, :points])
-  def point_story(%{id: team_id}, story_id, points) do
-    with team_entity <- Persistence.get_team!(team_id, :jira_settings),
+  def point_story(team_id, story_id, points) do
+    with team <- Persistence.get_team!(team_id, :jira_settings),
          story = Persistence.get_story!(story_id),
-         :ok <- jira().point_story(team_entity, story.jira_key, points),
+         :ok <- jira().point_story(team, story.jira_key, points),
          {:ok, _} <- Persistence.update_story(story, %{points: points}) do
       {:ok, load!(team_id)}
     else

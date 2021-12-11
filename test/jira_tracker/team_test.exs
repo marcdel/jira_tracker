@@ -83,29 +83,28 @@ defmodule JiraTracker.TeamTest do
 
   describe "point_story/2" do
     setup do
-      team = team_fixture()
-      story = story_fixture(%{team_id: team.id, jira_key: "ISSUE-1", in_backlog: true})
-
-      {:ok, team: team, story: story}
+      %{id: team_id} = team_fixture()
+      story = story_fixture(%{team_id: team_id, jira_key: "ISSUE-1", in_backlog: true})
+      {:ok, team_id: team_id, story: story}
     end
 
-    test "updates the story in the database", %{team: team, story: story} do
+    test "updates the story in the database", %{team_id: team_id, story: story} do
       expect(JiraMock, :point_story, fn _team, _jira_key, _points -> :ok end)
-      assert {:ok, _} = Team.point_story(team, story.id, 5)
+      assert {:ok, _} = Team.point_story(team_id, story.id, 5)
       assert %{points: 5} = Persistence.get_story!(story.id)
     end
 
-    test "updates the issue in jira", %{team: %{id: team_id} = team, story: story} do
+    test "updates the issue in jira", %{team_id: team_id, story: story} do
       %{id: story_id, jira_key: key} = story
       expect(JiraMock, :point_story, fn %{id: ^team_id}, ^key, 3 -> :ok end)
-      assert {:ok, _} = Team.point_story(team, story_id, 3)
+      assert {:ok, _} = Team.point_story(team_id, story_id, 3)
     end
 
-    test "returns team with updated story", %{team: %{id: team_id} = team, story: story} do
+    test "returns team with updated story", %{team_id: team_id, story: story} do
       %{id: story_id, jira_key: key} = story
       expect(JiraMock, :point_story, fn %{id: ^team_id}, ^key, 8 -> :ok end)
 
-      assert {:ok, updated_team} = Team.point_story(team, story_id, 8)
+      assert {:ok, updated_team} = Team.point_story(team_id, story_id, 8)
 
       assert %{backlog: %{stories: [%{points: 8}]}} = updated_team
     end
