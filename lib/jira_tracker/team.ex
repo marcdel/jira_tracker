@@ -74,14 +74,13 @@ defmodule JiraTracker.Team do
   alias JiraTracker.Persistence.Icebox, as: DbIcebox
 
   @decorate trace("JiraTracker.Team.refresh", include: [:team_id])
-  def refresh(%{id: team_id} = team) do
-    with team_entity <- Persistence.get_team!(team_id, :jira_settings),
-         {:ok, unsaved_stories} <- jira().fetch_issues(team_entity),
-         _results <- DbIcebox.add_new_stories(team_entity, unsaved_stories),
-         icebox_stories <- DbIcebox.stories(team) do
-      {:ok, put_in(team.icebox.stories, icebox_stories)}
+  def refresh(team_id) do
+    with team <- Persistence.get_team!(team_id, :jira_settings),
+         {:ok, unsaved_stories} <- jira().fetch_issues(team),
+         _results <- DbIcebox.add_new_stories(team, unsaved_stories) do
+      {:ok, load!(team_id)}
     else
-      _error -> {:error, team}
+      error -> error
     end
   end
 

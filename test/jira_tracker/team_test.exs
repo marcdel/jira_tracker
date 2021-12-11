@@ -123,7 +123,7 @@ defmodule JiraTracker.TeamTest do
       JiraTracker.JiraMock
       |> expect(:fetch_issues, fn _team -> {:ok, stories} end)
 
-      assert {:ok, updated_team} = Team.refresh(team)
+      assert {:ok, updated_team} = Team.refresh(team_id)
       assert %{icebox: %{stories: icebox_stories}} = updated_team
       assert [%{jira_key: "ISSUE-1"}, %{jira_key: "ISSUE-2"}] = icebox_stories
 
