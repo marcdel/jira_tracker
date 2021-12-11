@@ -95,15 +95,15 @@ defmodule JiraTracker.TeamTest do
       assert %{points: 5} = Persistence.get_story!(story.id)
     end
 
-    test "updates the issue in jira", %{team: team, story: story} do
+    test "updates the issue in jira", %{team: %{id: team_id} = team, story: story} do
       %{id: story_id, jira_key: key} = story
-      expect(JiraMock, :point_story, fn ^team, ^key, 3 -> :ok end)
+      expect(JiraMock, :point_story, fn %{id: ^team_id}, ^key, 3 -> :ok end)
       assert {:ok, _} = Team.point_story(team, story_id, 3)
     end
 
-    test "returns team with updated story", %{team: team, story: story} do
+    test "returns team with updated story", %{team: %{id: team_id} = team, story: story} do
       %{id: story_id, jira_key: key} = story
-      expect(JiraMock, :point_story, fn ^team, ^key, 8 -> :ok end)
+      expect(JiraMock, :point_story, fn %{id: ^team_id}, ^key, 8 -> :ok end)
 
       assert {:ok, updated_team} = Team.point_story(team, story_id, 8)
 

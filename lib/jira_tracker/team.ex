@@ -58,12 +58,13 @@ defmodule JiraTracker.Team do
     %{team | icebox_open: !team.icebox_open}
   end
 
-  @decorate trace("JiraTracker.Team.point_story", include: [:story_id, :points])
-  def point_story(team, story_id, points) do
-    with story = Persistence.get_story!(story_id),
-         :ok <- jira().point_story(team, story.jira_key, points),
+  @decorate trace("JiraTracker.Team.point_story", include: [:team_id, :story_id, :points])
+  def point_story(%{id: team_id}, story_id, points) do
+    with team_entity <- Persistence.get_team!(team_id, :jira_settings),
+         story = Persistence.get_story!(story_id),
+         :ok <- jira().point_story(team_entity, story.jira_key, points),
          {:ok, _} <- Persistence.update_story(story, %{points: points}) do
-      {:ok, load!(team.id)}
+      {:ok, load!(team_id)}
     else
       :error -> {:error, :error_updating_jira}
       error -> error
@@ -72,6 +73,7 @@ defmodule JiraTracker.Team do
 
   alias JiraTracker.Persistence.Icebox, as: DbIcebox
 
+  @decorate trace("JiraTracker.Team.refresh", include: [:team_id])
   def refresh(%{id: team_id} = team) do
     with team_entity <- Persistence.get_team!(team_id, :jira_settings),
          {:ok, unsaved_stories} <- jira().fetch_issues(team_entity),
